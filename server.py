@@ -23,6 +23,7 @@ HTTP_PORT = 8765
 WS_PORT = 8766
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 INDEX_PATH = os.path.join(PROJECT_DIR, "index.html")
+SPREADSHEET_REF = os.path.join(PROJECT_DIR, "spreadsheet-reference.txt")
 FEEDBACK_FILE = os.path.join(PROJECT_DIR, "feedback.txt")
 
 # All connected WebSocket clients (for broadcasting reload)
@@ -76,6 +77,21 @@ TOOLS = [
         },
     },
     {
+        "name": "read_spreadsheet",
+        "description": (
+            "Read the original Excel spreadsheet ('comparison Composite vs wood substructure.xlsx') "
+            "that the executive uses. This is the ORIGINAL reference document — call this when the user "
+            "asks about 'my spreadsheet', 'my sheet', 'the Excel file', or references data/formulas "
+            "from the original comparison. It contains two sheets: 'Comparison' (the main cost model) "
+            "and 'Labor & equipment' (crew rates and weekly costs)."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+        },
+    },
+    {
         "name": "revert_last_commit",
         "description": "Revert the most recent commit, undoing the last change. Use when something broke.",
         "input_schema": {
@@ -95,9 +111,20 @@ A single-page web app (index.html) that compares traditional PT wood dock constr
 against Shoreline Plastics' composite EcoPile monopile system. It has a dashboard view, \
 spreadsheet view, settings panel, bar charts, and PDF export.
 
+ORIGINAL SPREADSHEET:
+The executive built this calculator based on an Excel spreadsheet called \
+"comparison Composite vs wood substructure.xlsx". If the user mentions "my spreadsheet", \
+"my sheet", "the Excel file", "the original numbers", or references specific rows/formulas \
+from their comparison document, use the read_spreadsheet tool to look up the original data. \
+This is their source of truth — they may want to compare the web tool's numbers against it \
+or ask how specific calculations were derived. The spreadsheet has two sheets:
+  - "Comparison" — the main cost model with wood vs. composite side-by-side
+  - "Labor & equipment" — crew rates, insurance, equipment costs, daily/weekly totals
+
 YOUR CAPABILITIES:
 You can read and edit the source code of index.html using the provided tools. \
-Every edit you make is automatically committed to git with your description, so changes are tracked and reversible.
+Every edit you make is automatically committed to git with your description, so changes are tracked and reversible. \
+You can also read the original Excel spreadsheet to answer questions about the source data.
 
 WORKFLOW:
 1. When the user asks for a change, ALWAYS call read_file first to see the current code.
@@ -105,6 +132,7 @@ WORKFLOW:
 3. Use edit_file to make changes. Use multiple calls for multi-part edits.
 4. After your edits, the page auto-reloads in the user's browser.
 5. If something breaks, use revert_last_commit to undo.
+6. When the user asks about "the spreadsheet" or original data, call read_spreadsheet.
 
 RULES:
 - Keep the existing design language (navy/teal theme, Plus Jakarta Sans font, card-based layout).
@@ -184,6 +212,13 @@ def handle_tool(name, input_data):
             f.write(new_content)
 
         return "Edit applied successfully."
+
+    elif name == "read_spreadsheet":
+        try:
+            with open(SPREADSHEET_REF, "r") as f:
+                return f.read()
+        except FileNotFoundError:
+            return "ERROR: spreadsheet-reference.txt not found."
 
     elif name == "git_log":
         count = input_data.get("count", 10)
@@ -294,6 +329,11 @@ async def handle_ws(websocket):
                             await websocket.send(json.dumps({
                                 "type": "progress",
                                 "message": "Reading current source code...",
+                            }))
+                        elif tc.name == "read_spreadsheet":
+                            await websocket.send(json.dumps({
+                                "type": "progress",
+                                "message": "Checking original spreadsheet...",
                             }))
                         elif tc.name == "edit_file":
                             status = "Applied edit" if "successfully" in result else "Edit failed"

@@ -1,0 +1,86 @@
+=== SHEET: Comparison ===
+Rows: 69, Columns: 17
+
+Row   1: Wood docks vs. all composite dock with 2x12" Ecostringers with 16" mono Ecopile and pre assembled bents |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row   2:  |  |  |  |  |  |  |  |  |  |  | Dealer price LB |  |  |  |  | 
+Row   3: 10" piling 16' | 16 | wood piles |  | 168 | Ecopile | 288 | Ecopile 16" | 648 | Material | EcoPile | 1.5 |  |  |  |  | 
+Row   4: 12" x 35' PT piles  |  |  |  | 700 | Ecopile | 1500 |  |  |  |  |  |  |  |  |  | 
+Row   5: Black Wrap |  | 75 | Each |  |  |  |  |  | Material | Stringers | 1.5 |  |  |  |  | 
+Row   6: Stringers | 2x 10x12' PT | 31 | 2x12x 20'  | 330 | 2"x12"x 20' eco stringer |  |  |  |  |  |  |  |  |  |  | 
+Row   7: SLP flowthrow decking | 1-1/2"x12" | 5.75 |  |  |  |  |  |  |  |  | 2.5 |  |  |  |  | 
+Row   8: WearDeck decking | 1x6 | 9.25 |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row   9: Labor Pile Install | 250 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row  10: Labor Header/Bolting | 100 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row  11: Labor Decking | 8 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row  12: Labor Boatlift install | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row  13: Dock length in feet | 300 | x 5' wide |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row  14: Hardware | 60 | Each pile |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row  15: Composite Decking | 9.25 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row  16: Boatlift piles PT 12" x 35' | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row  17: Boatlift piles HD 12"x35 | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row  18: Boatlift | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row  19: Electrical/Lighting | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row  20: Plumbing | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row  22:  | Wood Dock w/ composite |  |  | 16" mono Ecopile with assembled bents |  |  |  |  |  |  |  |  |  |  |  | 
+Row  23:  | Decking |  |  |  | Feet/distance  |  |  |  |  |  |  |  |  |  |  | 
+Row  24: Piling spacing ft | 10 | ft |  | Pile/spacing | 20 | $ dif/wood |  |  |  |  |  |  |  |  |  | 
+Row  25:  | Wood | Wood Cost |  | Ecopile/Ecolumber/Eco deck |  |  |  |  |  |  |  |  |  |  |  | 
+Row  26: Piling/Count | 60 | 10080 |  | 15 | 9720 | -360 |  |  |  |  |  |  |  |  |  | 
+Row  27: Black pile wrap  | 75 | 4500 |  | N/A |  | -4500 |  |  |  |  |  |  |  |  |  | 
+Row  28: Stringer | 31 | 3720 |  | 330 | 19800 | 16080 |  |  |  |  |  |  |  |  |  | 
+Row  29: Headers and blocking | 41 | 1230 |  | 500 | 7500 | 6270 |  |  |  |  |  |  |  |  |  | 
+Row  30: Hardware | 60 | 3600 |  | 40 | 600 | -3000 |  |  |  |  |  |  |  |  |  | 
+Row  31: Bent pre-assemble  |  |  |  | 400 | 6000 | 6000 |  |  |  |  |  |  |  |  |  | 
+Row  32: Decking | 9.25 | 13875 |  | 5.75 | 8625 | -5250 |  |  |  |  |  |  |  |  |  | 
+Row  33: Decking Screws | 1200 | 1200 |  |  | 0 | -1200 |  |  |  |  |  |  |  |  |  | 
+Row  34: Total Material only |  | 38205 |  |  | 52245 |  |  |  |  |  |  |  |  |  |  | 
+Row  35:  |  |  |  | Profit Dist.  | 10449 | 10449 | Dealer profit |  |  |  |  |  |  |  |  | 
+Row  36:  |  |  |  | 0.2 |  |  |  |  |  |  |  |  |  |  |  | 
+Row  37:  |  |  |  |  | 62694 |  |  |  |  |  |  |  |  |  |  | 
+Row  39: Difference Material Only Cost vs. Wood Sub |  |  |  |  | 24489 |  |  |  |  |  |  |  |  |  |  | 
+Row  40: Material Only Cost % |  |  |  |  |  | 0.6409893992932862 | Difference  |  |  |  |  |  |  |  |  | 
+Row  42: Cost to put piling in | 250 | 15000 |  | 250 | 3750 | -11250 |  |  |  |  |  |  |  |  |  | 
+Row  43: Labor / Headers | 100 | 3000 |  | 100 | 1500 | -1500 |  |  |  |  |  |  |  |  |  | 
+Row  44: Labor / Stringer install | 50 | 4500 |  | 0 | 0 | -4500 |  |  |  |  |  |  |  |  |  | 
+Row  45: Labor / Decking | 8 | 12000 |  | 8 | 600 | -11400 |  |  |  |  |  |  |  |  |  | 
+Row  47: Labor to place bents |  |  |  | 200 | 3000 | 3000 |  |  |  |  |  |  |  |  |  | 
+Row  48: TOTAL LABOR COST |  | 34500 |  |  | 8850 | 25650 |  |  |  |  |  |  |  |  |  | 
+Row  49: TOTAL WEEKLY LABOR & EQUIPMENT | 9400 |  |  | 9400 |  |  |  |  |  |  |  |  |  |  |  | 
+Row  50: TOTAL INSTALL TIME | 3.6702127659574466 | Weeks |  |  | Weeks |  |  |  |  |  |  |  |  |  |  | 
+Row  51: TOTAL LABOR SAVINGS |  |  |  |  | 25650 | -0.7434782608695651 |  |  |  |  |  |  |  |  |  | 
+Row  52: Mobilization  | 3000 | 3000 |  | 3000 | 3000 |  |  |  |  |  |  |  |  |  |  | 
+Row  53: PROFIT FOR CONTRACTOR |  | 20000 |  |  | 20000 |  |  |  |  |  |  |  |  |  |  | 
+Row  54: Total Cost Material & Labor & Profit |  | 95705 |  |  | 94544 | -1161 |  |  |  |  |  |  |  |  |  | 
+Row  55: Material and Labor |  |  |  |  | -1161 |  |  |  |  |  |  |  |  |  |  | 
+Row  56: Material and Labor % |  |  |  |  | -0.012131027637009573 | less |  |  |  |  |  |  |  |  |  | 
+Row  57: Cost sqare foot walkway only - Material | 1500 | 25.47 |  | 41.796 | 0.6409893992932862 | more |  |  |  |  |  |  |  |  |  | 
+Row  58: Cost sqare foot walkway only - Labor | 1500 | 23 |  | 5.9 | -0.7434782608695651 | less |  |  |  |  |  |  |  |  |  | 
+Row  59: cost sqare foot total | 1500 | 63.803333333333335 |  | 63.029333333333334 | -0.012131027637009573 | less  |  |  |  |  |  |  |  |  |  | 
+Row  60: Note: |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row  61: This is a cost comparison for the substructure of a dock comparing PT wood to Ecopile/ composite stringers |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row  62: Labor cost is only approximate cost for a contractor to install  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row  63: Does not include boathouse/boatlift |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row  64: Does not include electrical or plumbing |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row  65: Due to reduced labor and pilings count hardware etc. cost is approximately same as PT wood with composite deck. |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row  66: Same protit for contractor even with about one quarte the time to build |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row  67: Contractor same profit in much reducded time, generating 2 to 4 times profit and revenue |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row  68: change yellow cells for different spacing and labor cost as well as dock size. |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+
+=== SHEET: Labor& equipment ===
+Rows: 22, Columns: 4
+
+Row   7:  |  |  | 50% Insurance/Benefits
+Row   8: Labor |  |  | Workers comp/Longshoreman
+Row   9: Supervisor |  | 40 | 60
+Row  10: Crew |  | 30 | 45
+Row  11: Crew |  | 25 | 37.5
+Row  12: Crew |  | 20 | 30
+Row  13:  |  |  | 172.5
+Row  14: Day rate |  |  | 1380
+Row  15: Weekly Rate |  |  | 6900
+Row  16:  |  |  | Barge pushboat/gas
+Row  17:  |  |  | Insurance
+Row  18: Equipment Cost Daily  |  |  | 500
+Row  19: Weekly |  |  | 2500
+Row  21: Total Daily  |  |  | 1880
+Row  22: Total Weekly |  |  | 9400
