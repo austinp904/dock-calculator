@@ -1887,10 +1887,25 @@
       chatWS.onerror = () => setConnected(false);
 
       chatWS.onmessage = (event) => {
-        chatWaiting = false;
-        removeThinking();
         try {
           const data = JSON.parse(event.data);
+
+          if (data.type === 'reload') {
+            addChatMsg('Code updated — reloading page...', 'system');
+            setTimeout(() => window.location.reload(), 800);
+            return;
+          }
+
+          if (data.type === 'progress') {
+            removeThinking();
+            addChatMsg(data.message, 'system');
+            showThinking();
+            return;
+          }
+
+          chatWaiting = false;
+          removeThinking();
+
           if (data.type === 'error') {
             addChatMsg(data.message, 'error');
           } else {
@@ -1904,7 +1919,10 @@
               syncSettingsToUI();
               updateAll();
               const keys = data.state_changes.map(sc => sc.key + '=' + sc.value).join(', ');
-              addChatMsg('Updated: ' + keys, 'system');
+              addChatMsg('Values updated: ' + keys, 'system');
+            }
+            if (data.edits_made) {
+              addChatMsg('Source code edited & committed to git', 'system');
             }
           }
         } catch (e) {
