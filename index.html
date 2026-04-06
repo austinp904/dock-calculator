@@ -1,0 +1,2213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shoreline Plastics — Dock Cost Comparison</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <style>
+    :root {
+      --navy: #0d2137;
+      --navy-mid: #163556;
+      --navy-light: #1e4d7b;
+      --teal: #0d7377;
+      --teal-light: #14a3a8;
+      --teal-pale: #e0f7f5;
+      --coral: #f4845f;
+      --coral-light: #f6a085;
+      --green: #10b981;
+      --green-light: #d1fae5;
+      --red: #ef4444;
+      --red-light: #fee2e2;
+      --bg: #f0f4f8;
+      --card: #ffffff;
+      --text: #1e293b;
+      --text-mid: #475569;
+      --text-light: #94a3b8;
+      --border: #e2e8f0;
+      --cell-border: #d1d5db;
+      --cell-focus: #2563eb;
+      --cell-focus-bg: #eff6ff;
+      --cell-hover: #f1f5f9;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+      --shadow-lg: 0 4px 6px rgba(0,0,0,0.07), 0 12px 28px rgba(0,0,0,0.08);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* ─── HEADER ─── */
+    .site-header {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+      color: white;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    }
+    .brand { display: flex; align-items: center; gap: 16px; }
+    .brand-logo {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--teal-light);
+    }
+    .brand-divider {
+      width: 1px;
+      height: 28px;
+      background: rgba(255,255,255,0.2);
+    }
+    .brand-title {
+      font-size: 15px;
+      font-weight: 500;
+      opacity: 0.85;
+    }
+    .header-actions { display: flex; gap: 10px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    .btn-ghost {
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.2); }
+    .btn-coral {
+      background: var(--coral);
+      color: white;
+    }
+    .btn-coral:hover { background: var(--coral-light); transform: translateY(-1px); }
+    .btn svg { width: 16px; height: 16px; }
+
+    /* ─── CONTROLS BAR ─── */
+    .controls-bar {
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .control-group label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-mid);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    .length-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 320px;
+      height: 6px;
+      background: linear-gradient(90deg, var(--teal-pale), var(--teal));
+      border-radius: 3px;
+      outline: none;
+    }
+    .length-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      background: var(--teal);
+      border: 3px solid white;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transition: transform 0.15s;
+    }
+    .length-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+    .length-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--teal);
+      min-width: 56px;
+    }
+    .length-unit {
+      font-size: 13px;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+    .width-input {
+      width: 56px;
+      padding: 6px 8px;
+      border: 1px solid var(--cell-border);
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .width-input:focus { border-color: var(--cell-focus); box-shadow: 0 0 0 2px rgba(37,99,235,0.12); }
+
+    /* ─── MAIN CONTENT ─── */
+    .main-content { padding: 28px 32px 40px; max-width: 1440px; margin: 0 auto; }
+
+    /* ─── COMPARISON GRID ─── */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      animation: fadeSlideUp 0.5s ease both;
+    }
+    .card:nth-child(2) { animation-delay: 0.08s; }
+    .card-header {
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-header.wood { background: linear-gradient(135deg, #5b3e1e, #7a5c3a); }
+    .card-header.composite { background: linear-gradient(135deg, var(--teal), var(--teal-light)); }
+    .card-header h2 { color: white; font-size: 17px; font-weight: 700; }
+    .card-header .subtitle { color: rgba(255,255,255,0.75); font-size: 12px; font-weight: 500; }
+
+    .card-body { padding: 20px 24px 24px; }
+
+    /* ─── UPGRADE TOGGLES ─── */
+    .upgrades-strip {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      background: #fef9f0;
+      border: 1px solid #f5e6cc;
+      border-radius: 10px;
+    }
+    .upgrade-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-mid);
+      cursor: pointer;
+      user-select: none;
+    }
+    .toggle-switch {
+      position: relative;
+      width: 40px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: #cbd5e1;
+      border-radius: 11px;
+      cursor: pointer;
+      transition: background 0.25s;
+    }
+    .toggle-track::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.25s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .toggle-switch input:checked + .toggle-track {
+      background: var(--coral);
+    }
+    .toggle-switch input:checked + .toggle-track::after {
+      transform: translateX(18px);
+    }
+
+    /* ─── COST TABLE ─── */
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-light);
+      margin-bottom: 8px;
+      margin-top: 16px;
+    }
+    .section-label:first-child { margin-top: 0; }
+    .cost-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .cost-table td {
+      padding: 6px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .cost-table td:first-child { color: var(--text-mid); }
+    .cost-table td:last-child {
+      text-align: right;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+      font-size: 13px;
+    }
+    .cost-table tr.subtotal td {
+      border-top: 2px solid var(--border);
+      border-bottom: none;
+      font-weight: 700;
+      padding-top: 10px;
+      color: var(--text);
+    }
+    .cost-table .dim { color: var(--text-light); }
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 14px 0;
+    }
+
+    /* ─── GRAND TOTAL ─── */
+    .grand-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 16px 0 12px;
+      border-top: 2px solid var(--text);
+    }
+    .grand-total .label {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .grand-total .value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 26px;
+      font-weight: 700;
+    }
+    .grand-total.wood-total .value { color: #7a5c3a; }
+    .grand-total.comp-total .value { color: var(--teal); }
+
+    /* ─── METRICS ─── */
+    .metrics-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .metric-badge {
+      flex: 1;
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 10px 12px;
+      text-align: center;
+    }
+    .metric-badge .mv {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      font-weight: 700;
+      display: block;
+    }
+    .metric-badge .ml {
+      font-size: 11px;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 2px;
+    }
+
+    /* ─── SAVINGS BANNER ─── */
+    .savings-banner {
+      border-radius: 12px;
+      padding: 18px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      animation: fadeSlideUp 0.5s ease 0.2s both;
+    }
+    .savings-banner.is-saving {
+      background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+      border: 1px solid #a7f3d0;
+    }
+    .savings-banner.is-more {
+      background: linear-gradient(135deg, #fefce8, #fef9c3);
+      border: 1px solid #fde68a;
+    }
+    .savings-text {
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .savings-text .amount {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .savings-banner.is-saving .amount { color: var(--green); }
+    .savings-banner.is-more .amount { color: #d97706; }
+    .savings-detail {
+      font-size: 13px;
+      color: var(--text-mid);
+      text-align: right;
+    }
+
+    /* ─── SHOWCASE ─── */
+    .showcase {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 28px;
+      animation: fadeSlideUp 0.5s ease 0.25s both;
+    }
+    .showcase-img {
+      flex: 1;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+    .showcase-img img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s;
+    }
+    .showcase-img:hover img { transform: scale(1.05); }
+    .showcase-img .caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 8px 12px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.65));
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* ─── CHART SECTION ─── */
+    .chart-section {
+      background: var(--card);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 24px 28px;
+      margin-bottom: 28px;
+      animation: fadeSlideUp 0.5s ease 0.3s both;
+    }
+    .chart-section h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .chart-section .chart-subtitle {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-bottom: 20px;
+    }
+    .chart-wrap {
+      position: relative;
+      height: 380px;
+    }
+
+    /* ─── KEY METRICS STRIP ─── */
+    .key-metrics {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 28px;
+      animation: fadeSlideUp 0.5s ease 0.35s both;
+    }
+    .key-metric {
+      flex: 1;
+      background: var(--card);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 18px 20px;
+      text-align: center;
+    }
+    .key-metric .km-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 24px;
+      font-weight: 700;
+      display: block;
+    }
+    .key-metric .km-label {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .km-green { color: var(--green); }
+    .km-coral { color: var(--coral); }
+    .km-teal { color: var(--teal); }
+
+    /* ─── SETTINGS PANEL ─── */
+    .settings-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 400px;
+      height: 100vh;
+      background: var(--card);
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1001;
+      display: flex;
+      flex-direction: column;
+      box-shadow: -4px 0 24px rgba(0,0,0,0.12);
+    }
+    .settings-panel.open { transform: translateX(0); }
+    .settings-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .settings-header h3 { font-size: 15px; font-weight: 700; }
+    .settings-close {
+      width: 32px; height: 32px;
+      border: none; background: var(--bg);
+      border-radius: 8px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; color: var(--text-mid);
+      transition: background 0.15s;
+    }
+    .settings-close:hover { background: var(--border); }
+    .settings-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0;
+    }
+    .settings-footer {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .btn-reset {
+      width: 100%;
+      padding: 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-mid);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-reset:hover { background: var(--border); color: var(--text); }
+
+    /* ─── SPREADSHEET CELLS ─── */
+    .sheet-group {
+      border-bottom: 1px solid var(--border);
+    }
+    .sheet-group-header {
+      padding: 10px 20px;
+      background: #f8fafc;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-light);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    .sheet-row {
+      display: grid;
+      grid-template-columns: 1fr 42px 110px;
+      align-items: center;
+      border-bottom: 1px solid #f1f5f9;
+      transition: background 0.1s;
+    }
+    .sheet-row:hover { background: var(--cell-hover); }
+    .sheet-label {
+      padding: 7px 12px 7px 20px;
+      font-size: 12.5px;
+      color: var(--text-mid);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sheet-unit {
+      font-size: 11px;
+      color: var(--text-light);
+      text-align: center;
+    }
+    .sheet-cell {
+      width: 100%;
+      padding: 7px 10px;
+      border: none;
+      border-left: 1px solid #f1f5f9;
+      background: transparent;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+      text-align: right;
+      color: var(--text);
+      outline: none;
+      transition: all 0.15s;
+    }
+    .sheet-cell:hover {
+      background: var(--cell-hover);
+      border-left-color: var(--cell-border);
+    }
+    .sheet-cell:focus {
+      background: var(--cell-focus-bg);
+      border-left-color: var(--cell-focus);
+      box-shadow: inset 2px 0 0 var(--cell-focus);
+      color: var(--cell-focus);
+    }
+    .sheet-cell::-webkit-inner-spin-button,
+    .sheet-cell::-webkit-outer-spin-button {
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .sheet-row:hover .sheet-cell::-webkit-inner-spin-button,
+    .sheet-row:hover .sheet-cell::-webkit-outer-spin-button,
+    .sheet-cell:focus::-webkit-inner-spin-button,
+    .sheet-cell:focus::-webkit-outer-spin-button {
+      opacity: 1;
+    }
+
+    /* ─── BACKDROP ─── */
+    .backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.25);
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes cellFlash {
+      0% { background-color: #fef3c7; }
+      100% { background-color: transparent; }
+    }
+    .flash { animation: cellFlash 0.5s ease; }
+
+    /* ─── NOTES ─── */
+    .notes-section {
+      font-size: 12px;
+      color: var(--text-light);
+      line-height: 1.7;
+      max-width: 800px;
+      margin-bottom: 40px;
+    }
+    .notes-section strong { color: var(--text-mid); }
+
+    /* ─── SPREADSHEET OVERLAY ─── */
+    .ss-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: #f9f9f9;
+      display: none;
+      flex-direction: column;
+    }
+    .ss-overlay.open { display: flex; }
+    .ss-toolbar {
+      background: linear-gradient(135deg, #1e6f3e, #217346);
+      color: white;
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .ss-toolbar-left { display: flex; align-items: center; gap: 16px; }
+    .ss-toolbar h2 { font-size: 15px; font-weight: 700; letter-spacing: 0.3px; }
+    .ss-toolbar .ss-badge {
+      background: rgba(255,255,255,0.18);
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .ss-close-btn {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: white;
+      padding: 7px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      transition: background 0.15s;
+    }
+    .ss-close-btn:hover { background: rgba(255,255,255,0.3); }
+    .ss-formula-bar {
+      background: white;
+      border-bottom: 1px solid #d4d4d4;
+      padding: 5px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+    .ss-formula-bar .ss-cell-ref {
+      background: #f0f0f0;
+      border: 1px solid #ccc;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-weight: 600;
+      min-width: 45px;
+      text-align: center;
+      color: #333;
+    }
+    .ss-formula-bar .ss-formula-text {
+      color: #666;
+      flex: 1;
+    }
+    .ss-body {
+      flex: 1;
+      overflow: auto;
+      padding: 0;
+    }
+    .ss-table {
+      border-collapse: collapse;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      margin: 0;
+    }
+    .ss-table th {
+      background: #e8e8e8;
+      border: 1px solid #bbb;
+      padding: 4px 6px;
+      font-weight: 600;
+      color: #444;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      text-align: center;
+      font-size: 11px;
+    }
+    .ss-table td {
+      border: 1px solid #d0d0d0;
+      padding: 2px 8px;
+      white-space: nowrap;
+      height: 26px;
+      vertical-align: middle;
+      background: white;
+    }
+    .ss-table td:nth-child(2) {
+      white-space: normal;
+      min-width: 240px;
+      max-width: 300px;
+    }
+    .ss-rn {
+      background: #e8e8e8 !important;
+      text-align: center;
+      color: #666;
+      font-size: 10px;
+      width: 36px;
+      min-width: 36px;
+      border-color: #bbb !important;
+      position: sticky;
+      left: 0;
+      z-index: 1;
+    }
+    .ss-colA { min-width: 200px; }
+    .ss-colB, .ss-colE { min-width: 90px; text-align: right; }
+    .ss-colC, .ss-colF { min-width: 110px; text-align: right; }
+    .ss-colD { min-width: 20px; background: #f4f4f4 !important; border-left: 2px solid #999 !important; border-right: 2px solid #999 !important; }
+    .ss-colG { min-width: 110px; text-align: right; }
+    .ss-input-td {
+      background: #fffde7 !important;
+      padding: 0 !important;
+    }
+    .ss-input-td input {
+      width: 100%;
+      height: 100%;
+      min-height: 24px;
+      border: none;
+      background: transparent;
+      padding: 2px 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      text-align: right;
+      outline: none;
+      color: #1a1a1a;
+    }
+    .ss-input-td input:focus {
+      background: #e3f2fd;
+      box-shadow: inset 0 0 0 2px #1976d2;
+    }
+    .ss-computed { color: #1565c0; }
+    .ss-neg { color: #c62828; }
+    .ss-pos { color: #2e7d32; }
+    .ss-section td {
+      background: #e8f5e9 !important;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      color: #2e7d32;
+    }
+    .ss-header-row td {
+      background: #e3f2fd !important;
+      font-weight: 700;
+      color: #1565c0;
+      font-size: 11px;
+    }
+    .ss-subtotal td {
+      border-top: 2px solid #666 !important;
+      font-weight: 700;
+      background: #f5f5f5 !important;
+    }
+    .ss-grandtotal td {
+      border-top: 3px double #333 !important;
+      font-weight: 700;
+      font-size: 13px;
+      background: #c8e6c9 !important;
+      color: #1b5e20;
+    }
+    .ss-empty td { border-color: #e8e8e8; background: #fafafa !important; }
+    .ss-dim { color: #999; font-size: 11px; }
+    .ss-note td {
+      background: #fff8e1 !important;
+      font-size: 11px;
+      color: #666;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .ss-label-bold { font-weight: 700; }
+
+    /* ─── AI CHAT SIDEBAR ─── */
+    .chat-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      position: relative;
+    }
+    .chat-toggle .chat-status {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ef4444;
+      transition: background 0.3s;
+    }
+    .chat-toggle .chat-status.connected { background: #10b981; }
+
+    .chat-sidebar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 400px;
+      height: 100vh;
+      background: var(--card);
+      z-index: 3000;
+      display: flex;
+      flex-direction: column;
+      box-shadow: -4px 0 24px rgba(0,0,0,0.12);
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .chat-sidebar.open { transform: translateX(0); }
+
+    body.chat-open .site-header,
+    body.chat-open .controls-bar,
+    body.chat-open .main-content { margin-right: 400px; transition: margin-right 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+    body .site-header,
+    body .controls-bar,
+    body .main-content { transition: margin-right 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+
+    .chat-sidebar-header {
+      background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+      color: white;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .chat-sidebar-header .chat-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .chat-sidebar-header h4 {
+      font-size: 15px;
+      font-weight: 700;
+      margin: 0;
+    }
+    .chat-sidebar-header .chat-model-badge {
+      font-size: 10px;
+      background: rgba(255,255,255,0.15);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .chat-sidebar-close {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: rgba(255,255,255,0.1);
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: white;
+      transition: background 0.15s;
+    }
+    .chat-sidebar-close:hover { background: rgba(255,255,255,0.25); }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      background: #f8fafc;
+    }
+    .chat-msg {
+      max-width: 90%;
+      padding: 11px 15px;
+      border-radius: 14px;
+      font-size: 13px;
+      line-height: 1.55;
+      word-wrap: break-word;
+    }
+    .chat-msg.user {
+      align-self: flex-end;
+      background: var(--navy);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+    .chat-msg.ai {
+      align-self: flex-start;
+      background: white;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .chat-msg.error {
+      align-self: flex-start;
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+      border-bottom-left-radius: 4px;
+      font-size: 12px;
+    }
+    .chat-msg.system {
+      align-self: center;
+      background: var(--teal-pale);
+      color: var(--teal);
+      font-size: 11px;
+      font-weight: 600;
+      text-align: center;
+      padding: 5px 12px;
+      border-radius: 20px;
+    }
+    .chat-thinking {
+      align-self: flex-start;
+      display: flex;
+      gap: 5px;
+      padding: 12px 18px;
+      background: white;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+    }
+    .chat-thinking span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--teal);
+      animation: chatBounce 1.2s infinite;
+    }
+    .chat-thinking span:nth-child(2) { animation-delay: 0.15s; }
+    .chat-thinking span:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes chatBounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-8px); opacity: 1; }
+    }
+    .chat-input-area {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      background: white;
+      flex-shrink: 0;
+    }
+    .chat-input-row {
+      display: flex;
+      gap: 8px;
+    }
+    .chat-input-row input {
+      flex: 1;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 11px 16px;
+      font-family: inherit;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .chat-input-row input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(13,115,119,0.1); }
+    .chat-input-row input::placeholder { color: var(--text-light); }
+    .chat-send-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      border: none;
+      background: var(--teal);
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .chat-send-btn:hover { background: var(--teal-light); transform: scale(1.05); }
+    .chat-send-btn:disabled { background: var(--border); cursor: not-allowed; transform: none; }
+    .chat-send-btn svg { width: 18px; height: 18px; }
+    .chat-hint {
+      font-size: 11px;
+      color: var(--text-light);
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    /* ─── PRINT ─── */
+    .print-only { display: none; }
+    @media print {
+      @page { size: landscape; margin: 0.4in; }
+      body { background: white; font-size: 10px; }
+      .site-header, .controls-bar, .settings-panel, .backdrop,
+      .showcase, .savings-banner, .key-metrics, .notes-section, .ss-overlay,
+      .chat-sidebar { display: none !important; }
+      .print-only { display: block !important; }
+      .comparison-grid { display: none !important; }
+      .main-content { padding: 0; max-width: 100%; }
+      .chart-section {
+        box-shadow: none;
+        border: 1px solid #ddd;
+        padding: 16px;
+        break-inside: avoid;
+      }
+      .chart-section h3 { font-size: 13px; }
+      .chart-wrap { height: 260px; }
+
+      .print-header {
+        text-align: center;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid var(--navy);
+      }
+      .print-header h1 {
+        font-size: 20px;
+        color: var(--teal);
+        margin-bottom: 2px;
+        letter-spacing: 1px;
+      }
+      .print-header h2 {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .print-header .config-line {
+        font-size: 11px;
+        color: var(--text-mid);
+        margin-top: 4px;
+      }
+      .print-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+        margin-bottom: 16px;
+      }
+      .print-table th, .print-table td {
+        padding: 4px 10px;
+        text-align: left;
+        border: 1px solid #ddd;
+      }
+      .print-table th {
+        background: var(--navy);
+        color: white;
+        font-weight: 600;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .print-table td:nth-child(2),
+      .print-table td:nth-child(3),
+      .print-table td:nth-child(4) {
+        text-align: right;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 10.5px;
+      }
+      .print-table .sec-row td {
+        background: #f1f5f9;
+        font-weight: 700;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--text-mid);
+      }
+      .print-table .total-row td {
+        background: #e2e8f0;
+        font-weight: 700;
+        font-size: 12px;
+        border-top: 2px solid var(--navy);
+      }
+      .print-table .sub-row td {
+        font-weight: 600;
+        border-top: 1.5px solid #aaa;
+      }
+      .print-footer {
+        text-align: center;
+        font-size: 9px;
+        color: var(--text-light);
+        margin-top: 12px;
+      }
+      .print-images {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 14px;
+        justify-content: center;
+      }
+      .print-images img {
+        height: 90px;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── HEADER ─── -->
+  <header class="site-header">
+    <div class="brand">
+      <div class="brand-logo">SHORELINE PLASTICS</div>
+      <div class="brand-divider"></div>
+      <div class="brand-title">EcoPile Monopile Dock System — Cost Comparison</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-coral" onclick="exportPDF()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Export PDF
+      </button>
+      <button class="btn btn-ghost" onclick="openSpreadsheet()" style="background:rgba(33,115,70,0.35);border-color:rgba(33,115,70,0.5)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
+        Spreadsheet View
+      </button>
+      <button class="btn btn-ghost chat-toggle" onclick="toggleChat()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        AI Chat
+        <span class="chat-status" id="chatStatusHeader"></span>
+      </button>
+      <button class="btn btn-ghost" onclick="toggleSettings()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 00-2 2v.18a2 2 0 01-1 1.73l-.43.25a2 2 0 01-2 0l-.15-.08a2 2 0 00-2.73.73l-.22.38a2 2 0 00.73 2.73l.15.1a2 2 0 011 1.72v.51a2 2 0 01-1 1.74l-.15.09a2 2 0 00-.73 2.73l.22.38a2 2 0 002.73.73l.15-.08a2 2 0 012 0l.43.25a2 2 0 011 1.73V20a2 2 0 002 2h.44a2 2 0 002-2v-.18a2 2 0 011-1.73l.43-.25a2 2 0 012 0l.15.08a2 2 0 002.73-.73l.22-.39a2 2 0 00-.73-2.73l-.15-.08a2 2 0 01-1-1.74v-.5a2 2 0 011-1.74l.15-.09a2 2 0 00.73-2.73l-.22-.38a2 2 0 00-2.73-.73l-.15.08a2 2 0 01-2 0l-.43-.25a2 2 0 01-1-1.73V4a2 2 0 00-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        Settings
+      </button>
+    </div>
+  </header>
+
+  <!-- ─── CONTROLS BAR ─── -->
+  <div class="controls-bar">
+    <div class="control-group">
+      <label>Dock Length</label>
+      <input type="range" class="length-slider" id="lengthSlider" min="60" max="500" step="10" value="300">
+      <span class="length-value" id="lengthDisplay">300</span>
+      <span class="length-unit">ft</span>
+    </div>
+    <div class="control-group">
+      <label>Width</label>
+      <input type="number" class="width-input" id="widthInput" value="5" min="3" max="12" step="1">
+      <span class="length-unit">ft</span>
+    </div>
+  </div>
+
+  <div class="main-content">
+
+    <!-- ─── PRINT HEADER (hidden on screen) ─── -->
+    <div class="print-only" id="printView">
+      <div class="print-header">
+        <h1>SHORELINE PLASTICS</h1>
+        <h2>EcoPile Monopile Dock System — Cost Comparison</h2>
+        <div class="config-line" id="printConfig"></div>
+      </div>
+      <div class="print-images">
+        <img src="monocap 2 copy.png" alt="MonoCap System">
+        <img src="monocap 4.png" alt="MonoCap Detail">
+        <img src="monocap 6.png" alt="MonoCap Close-up">
+      </div>
+      <table class="print-table" id="printTable"></table>
+      <div class="print-footer">
+        Generated by Shoreline Plastics Dock Comparison Tool &bull; Costs are estimates for comparison purposes
+      </div>
+    </div>
+
+    <!-- ─── COMPARISON CARDS ─── -->
+    <div class="comparison-grid">
+
+      <!-- WOOD CARD -->
+      <div class="card">
+        <div class="card-header wood">
+          <div>
+            <h2>Traditional Wood Dock</h2>
+            <div class="subtitle" id="woodSubtitle">Standard PT wood construction</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="upgrades-strip">
+            <label class="upgrade-item" for="toggleCompDeck">
+              <span class="toggle-switch">
+                <input type="checkbox" id="toggleCompDeck" onchange="updateAll()" aria-label="Composite Deck upgrade">
+                <span class="toggle-track"></span>
+              </span>
+              <span>Composite Deck</span>
+            </label>
+            <label class="upgrade-item" for="toggleEcoPile">
+              <span class="toggle-switch">
+                <input type="checkbox" id="toggleEcoPile" onchange="updateAll()" aria-label="EcoPile Pilings upgrade">
+                <span class="toggle-track"></span>
+              </span>
+              <span>EcoPile Pilings</span>
+            </label>
+          </div>
+
+          <div class="section-label">Materials</div>
+          <table class="cost-table" id="woodMatTable"></table>
+
+          <div class="section-label">Labor</div>
+          <table class="cost-table" id="woodLabTable"></table>
+
+          <div class="section-label">Overhead</div>
+          <table class="cost-table" id="woodOhTable"></table>
+
+          <div class="grand-total wood-total">
+            <span class="label">Grand Total</span>
+            <span class="value" id="woodGrand">$0</span>
+          </div>
+          <div class="metrics-row">
+            <div class="metric-badge">
+              <span class="mv" id="woodSqft">$0</span>
+              <span class="ml">Per Sq Ft</span>
+            </div>
+            <div class="metric-badge">
+              <span class="mv" id="woodWeeks">0</span>
+              <span class="ml">Install Weeks</span>
+            </div>
+            <div class="metric-badge">
+              <span class="mv" id="woodPiles">0</span>
+              <span class="ml">Piles Needed</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMPOSITE CARD -->
+      <div class="card">
+        <div class="card-header composite">
+          <div>
+            <h2>Shoreline Composite System</h2>
+            <div class="subtitle">16" EcoPile Monopile + Pre-assembled Bents</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="section-label">Materials</div>
+          <table class="cost-table" id="compMatTable"></table>
+
+          <div class="section-label">Labor</div>
+          <table class="cost-table" id="compLabTable"></table>
+
+          <div class="section-label">Overhead</div>
+          <table class="cost-table" id="compOhTable"></table>
+
+          <div class="grand-total comp-total">
+            <span class="label">Grand Total</span>
+            <span class="value" id="compGrand">$0</span>
+          </div>
+          <div class="metrics-row">
+            <div class="metric-badge">
+              <span class="mv" id="compSqft">$0</span>
+              <span class="ml">Per Sq Ft</span>
+            </div>
+            <div class="metric-badge">
+              <span class="mv" id="compWeeks">0</span>
+              <span class="ml">Install Weeks</span>
+            </div>
+            <div class="metric-badge">
+              <span class="mv" id="compPiles">0</span>
+              <span class="ml">Piles Needed</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SAVINGS BANNER ─── -->
+    <div class="savings-banner" id="savingsBanner">
+      <div class="savings-text" id="savingsText"></div>
+      <div class="savings-detail" id="savingsDetail"></div>
+    </div>
+
+    <!-- ─── KEY METRICS ─── -->
+    <div class="key-metrics">
+      <div class="key-metric">
+        <span class="km-value km-coral" id="kmMatDiff">+64%</span>
+        <span class="km-label">Material Cost Difference</span>
+      </div>
+      <div class="key-metric">
+        <span class="km-value km-green" id="kmLabSave">-74%</span>
+        <span class="km-label">Labor Savings</span>
+      </div>
+      <div class="key-metric">
+        <span class="km-value km-teal" id="kmTimeSave">3x</span>
+        <span class="km-label">Faster Install</span>
+      </div>
+      <div class="key-metric">
+        <span class="km-value" id="kmTotalDiff">-1.2%</span>
+        <span class="km-label">Total Cost Difference</span>
+      </div>
+    </div>
+
+    <!-- ─── PRODUCT SHOWCASE ─── -->
+    <div class="showcase">
+      <div class="showcase-img">
+        <img src="monocap 2 copy.png" alt="MonoCap system overview">
+        <div class="caption">MonoCap Mounting System</div>
+      </div>
+      <div class="showcase-img">
+        <img src="monocap 4.png" alt="MonoCap bracket detail">
+        <div class="caption">Slotted Bracket Connection</div>
+      </div>
+      <div class="showcase-img">
+        <img src="monocap 6.png" alt="MonoCap close-up">
+        <div class="caption">Precision Alignment System</div>
+      </div>
+    </div>
+
+    <!-- ─── BAR CHART ─── -->
+    <div class="chart-section">
+      <h3>Full Configuration Comparison</h3>
+      <div class="chart-subtitle">All five configurations shown with material, labor, and overhead breakdown</div>
+      <div class="chart-wrap">
+        <canvas id="compChart"></canvas>
+      </div>
+    </div>
+
+    <!-- ─── NOTES ─── -->
+    <div class="notes-section">
+      <strong>Notes:</strong> This is a cost comparison for the substructure of a dock comparing PT wood to EcoPile/composite stringers.
+      Labor cost is approximate. Does not include boathouse, boatlift, electrical, or plumbing.
+      Due to reduced labor and piling count, the Shoreline Composite system costs approximately the same as PT wood with composite decking, while installing in roughly one quarter the time.
+    </div>
+  </div>
+
+  <!-- ─── SETTINGS PANEL ─── -->
+  <aside class="settings-panel" id="settingsPanel">
+    <div class="settings-header">
+      <h3>Edit All Values</h3>
+      <button class="settings-close" onclick="toggleSettings()">&times;</button>
+    </div>
+    <div class="settings-body">
+      <!-- Dock Configuration -->
+      <div class="sheet-group">
+        <div class="sheet-group-header">Dock Configuration</div>
+        <div class="sheet-row"><div class="sheet-label">Dock Length</div><div class="sheet-unit">ft</div><input class="sheet-cell" type="number" data-key="dockLength" step="10" min="60" max="500"></div>
+        <div class="sheet-row"><div class="sheet-label">Dock Width</div><div class="sheet-unit">ft</div><input class="sheet-cell" type="number" data-key="dockWidth" step="1" min="3" max="12"></div>
+        <div class="sheet-row"><div class="sheet-label">Wood Pile Spacing</div><div class="sheet-unit">ft</div><input class="sheet-cell" type="number" data-key="woodPileSpacing" step="1" min="4" max="16"></div>
+        <div class="sheet-row"><div class="sheet-label">Composite Pile Spacing</div><div class="sheet-unit">ft</div><input class="sheet-cell" type="number" data-key="compositePileSpacing" step="1" min="10" max="30"></div>
+      </div>
+      <!-- Wood Material Prices -->
+      <div class="sheet-group">
+        <div class="sheet-group-header">Wood Material Prices</div>
+        <div class="sheet-row"><div class="sheet-label">Wood Pile (10" x 16')</div><div class="sheet-unit">$</div><input class="sheet-cell" type="number" data-key="woodPilePrice" step="1"></div>
+        <div class="sheet-row"><div class="sheet-label">Black Pile Wrap</div><div class="sheet-unit">$/ea</div><input class="sheet-cell" type="number" data-key="blackWrapPrice" step="1"></div>
+        <div class="sheet-row"><div class="sheet-label">Wood Stringer (2x10x12')</div><div class="sheet-unit">$/ea</div><input class="sheet-cell" type="number" data-key="woodStringerPrice" step="0.5"></div>
+        <div class="sheet-row"><div class="sheet-label">Wood Decking</div><div class="sheet-unit">$/sf</div><input class="sheet-cell" type="number" data-key="woodDeckingPrice" step="0.01"></div>
+        <div class="sheet-row"><div class="sheet-label">WearDeck Composite</div><div class="sheet-unit">$/sf</div><input class="sheet-cell" type="number" data-key="wearDeckPrice" step="0.25"></div>
+        <div class="sheet-row"><div class="sheet-label">Headers &amp; Blocking</div><div class="sheet-unit">$/bent</div><input class="sheet-cell" type="number" data-key="woodHeaderPrice" step="1"></div>
+        <div class="sheet-row"><div class="sheet-label">Hardware (per pile)</div><div class="sheet-unit">$/pile</div><input class="sheet-cell" type="number" data-key="woodHardwarePrice" step="1"></div>
+        <div class="sheet-row"><div class="sheet-label">Decking Screws</div><div class="sheet-unit">$</div><input class="sheet-cell" type="number" data-key="deckingScrews" step="50"></div>
+      </div>
+      <!-- Composite Material Prices -->
+      <div class="sheet-group">
+        <div class="sheet-group-header">Composite Material Prices</div>
+        <div class="sheet-row"><div class="sheet-label">EcoPile 16"</div><div class="sheet-unit">$/ea</div><input class="sheet-cell" type="number" data-key="ecopile16Price" step="1"></div>
+        <div class="sheet-row"><div class="sheet-label">Eco Stringer (2x12x20')</div><div class="sheet-unit">$/ea</div><input class="sheet-cell" type="number" data-key="ecoStringerPrice" step="1"></div>
+        <div class="sheet-row"><div class="sheet-label">SLP Decking</div><div class="sheet-unit">$/sf</div><input class="sheet-cell" type="number" data-key="slpDeckingPrice" step="0.25"></div>
+        <div class="sheet-row"><div class="sheet-label">Headers &amp; Blocking</div><div class="sheet-unit">$/bent</div><input class="sheet-cell" type="number" data-key="compositeHeaderPrice" step="10"></div>
+        <div class="sheet-row"><div class="sheet-label">Hardware (per pile)</div><div class="sheet-unit">$/pile</div><input class="sheet-cell" type="number" data-key="compositeHardwarePrice" step="1"></div>
+        <div class="sheet-row"><div class="sheet-label">Bent Assembly</div><div class="sheet-unit">$/bent</div><input class="sheet-cell" type="number" data-key="bentAssemblyPrice" step="10"></div>
+        <div class="sheet-row"><div class="sheet-label">Dealer Profit</div><div class="sheet-unit">%</div><input class="sheet-cell" type="number" data-key="dealerProfitPct" step="1" min="0" max="50"></div>
+      </div>
+      <!-- Labor Rates -->
+      <div class="sheet-group">
+        <div class="sheet-group-header">Labor Rates</div>
+        <div class="sheet-row"><div class="sheet-label">Pile Install</div><div class="sheet-unit">$/pile</div><input class="sheet-cell" type="number" data-key="laborPileInstall" step="10"></div>
+        <div class="sheet-row"><div class="sheet-label">Header / Bolting</div><div class="sheet-unit">$/bent</div><input class="sheet-cell" type="number" data-key="laborHeaders" step="10"></div>
+        <div class="sheet-row"><div class="sheet-label">Stringer Install</div><div class="sheet-unit">$/set</div><input class="sheet-cell" type="number" data-key="laborStringerInstall" step="5"></div>
+        <div class="sheet-row"><div class="sheet-label">Decking</div><div class="sheet-unit">$/sf</div><input class="sheet-cell" type="number" data-key="laborDecking" step="0.5"></div>
+        <div class="sheet-row"><div class="sheet-label">Bent Placement</div><div class="sheet-unit">$/bent</div><input class="sheet-cell" type="number" data-key="laborBentPlacement" step="10"></div>
+      </div>
+      <!-- Overhead -->
+      <div class="sheet-group">
+        <div class="sheet-group-header">Overhead</div>
+        <div class="sheet-row"><div class="sheet-label">Weekly Labor &amp; Equipment</div><div class="sheet-unit">$/wk</div><input class="sheet-cell" type="number" data-key="weeklyLaborEquipment" step="100"></div>
+        <div class="sheet-row"><div class="sheet-label">Mobilization</div><div class="sheet-unit">$</div><input class="sheet-cell" type="number" data-key="mobilization" step="500"></div>
+        <div class="sheet-row"><div class="sheet-label">Contractor Profit</div><div class="sheet-unit">$</div><input class="sheet-cell" type="number" data-key="contractorProfit" step="1000"></div>
+      </div>
+      <!-- Upgrade Multipliers -->
+      <div class="sheet-group">
+        <div class="sheet-group-header">Upgrade Multipliers</div>
+        <div class="sheet-row"><div class="sheet-label">Composite Deck (x wood)</div><div class="sheet-unit">x</div><input class="sheet-cell" type="number" data-key="compositeDeckMultiplier" step="0.1" min="1"></div>
+        <div class="sheet-row"><div class="sheet-label">EcoPile (x wood pile)</div><div class="sheet-unit">x</div><input class="sheet-cell" type="number" data-key="ecopileMultiplier" step="0.1" min="1"></div>
+      </div>
+    </div>
+    <div class="settings-footer">
+      <button class="btn-reset" onclick="resetDefaults()">Reset to Defaults</button>
+    </div>
+  </aside>
+  <div class="backdrop" id="backdrop" onclick="toggleSettings()"></div>
+
+  <!-- ─── SPREADSHEET OVERLAY ─── -->
+  <div class="ss-overlay" id="ssOverlay">
+    <div class="ss-toolbar">
+      <div class="ss-toolbar-left">
+        <h2>Spreadsheet View</h2>
+        <span class="ss-badge">Yellow cells = editable inputs</span>
+      </div>
+      <button class="ss-close-btn" onclick="closeSpreadsheet()">&#x2715;&ensp;Back to Dashboard</button>
+    </div>
+    <div class="ss-formula-bar">
+      <span class="ss-cell-ref" id="ssCellRef">—</span>
+      <span class="ss-formula-text" id="ssFormulaText">Click a cell to see its value or formula</span>
+    </div>
+    <div class="ss-body" tabindex="0">
+      <table class="ss-table" id="ssTable"></table>
+    </div>
+  </div>
+
+  <!-- ─── AI CHAT SIDEBAR ─── -->
+  <aside class="chat-sidebar" id="chatSidebar">
+    <div class="chat-sidebar-header">
+      <div class="chat-title-row">
+        <h4>Shoreline AI</h4>
+        <span class="chat-model-badge">Sonnet</span>
+        <span class="chat-status" id="chatStatus"></span>
+      </div>
+      <button class="chat-sidebar-close" onclick="toggleChat()">&times;</button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-msg system">Ask me anything about the cost comparison, or request changes.</div>
+    </div>
+    <div class="chat-input-area">
+      <div class="chat-input-row">
+        <input type="text" id="chatInput" placeholder="e.g. Run numbers for a 400ft dock…" autocomplete="off">
+        <button class="chat-send-btn" id="chatSendBtn" onclick="sendChat()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        </button>
+      </div>
+      <div class="chat-hint">Press Enter to send &bull; Values update live</div>
+    </div>
+  </aside>
+
+  <script>
+    const DEFAULTS = {
+      dockLength: 300,
+      dockWidth: 5,
+      woodPileSpacing: 10,
+      compositePileSpacing: 20,
+      woodPilePrice: 168,
+      blackWrapPrice: 75,
+      woodStringerPrice: 31,
+      woodDeckingPrice: 3.08,
+      wearDeckPrice: 9.25,
+      woodHeaderPrice: 41,
+      woodHardwarePrice: 60,
+      deckingScrews: 1200,
+      ecopile16Price: 648,
+      ecoStringerPrice: 330,
+      slpDeckingPrice: 5.75,
+      compositeHeaderPrice: 500,
+      compositeHardwarePrice: 40,
+      bentAssemblyPrice: 400,
+      dealerProfitPct: 20,
+      laborPileInstall: 250,
+      laborHeaders: 100,
+      laborStringerInstall: 50,
+      laborDecking: 8,
+      laborBentPlacement: 200,
+      weeklyLaborEquipment: 9400,
+      mobilization: 3000,
+      contractorProfit: 20000,
+      compositeDeckMultiplier: 3,
+      ecopileMultiplier: 3,
+    };
+
+    let S = { ...DEFAULTS };
+
+    function fmt(n) {
+      return '$' + Math.round(n).toLocaleString('en-US');
+    }
+    function fmtDec(n, d) {
+      return '$' + n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+    }
+    function pct(n) {
+      return (n >= 0 ? '+' : '') + (n * 100).toFixed(1) + '%';
+    }
+
+    function calcWood(s, compDeck, ecoPile) {
+      const sqft = s.dockLength * s.dockWidth;
+      const bentCount = Math.round(s.dockLength / s.woodPileSpacing);
+      const pileCount = bentCount * 2;
+
+      const pilePrice = ecoPile ? s.woodPilePrice * s.ecopileMultiplier : s.woodPilePrice;
+      const deckPrice = compDeck ? s.woodDeckingPrice * s.compositeDeckMultiplier : s.woodDeckingPrice;
+
+      const mat = {
+        pilings: pileCount * pilePrice,
+        blackWrap: ecoPile ? 0 : pileCount * s.blackWrapPrice,
+        stringers: bentCount * 4 * s.woodStringerPrice,
+        headers: bentCount * s.woodHeaderPrice,
+        hardware: pileCount * s.woodHardwarePrice,
+        decking: sqft * deckPrice,
+        screws: s.deckingScrews,
+      };
+      mat.total = mat.pilings + mat.blackWrap + mat.stringers + mat.headers + mat.hardware + mat.decking + mat.screws;
+
+      const lab = {
+        pileInstall: pileCount * s.laborPileInstall,
+        headers: bentCount * s.laborHeaders,
+        stringers: bentCount * s.laborStringerInstall * 3,
+        decking: s.laborDecking * sqft,
+      };
+      lab.total = lab.pileInstall + lab.headers + lab.stringers + lab.decking;
+
+      const overhead = s.mobilization + s.contractorProfit;
+      const grand = mat.total + lab.total + overhead;
+      const weeks = lab.total / s.weeklyLaborEquipment;
+
+      return { mat, lab, overhead, grand, weeks, pileCount, bentCount, sqft, deckPrice, pilePrice };
+    }
+
+    function calcComposite(s) {
+      const sqft = s.dockLength * s.dockWidth;
+      const bentCount = Math.round(s.dockLength / s.compositePileSpacing);
+      const pileCount = bentCount;
+
+      const mat = {
+        pilings: pileCount * s.ecopile16Price,
+        stringers: bentCount * 4 * s.ecoStringerPrice,
+        headers: bentCount * s.compositeHeaderPrice,
+        hardware: pileCount * s.compositeHardwarePrice,
+        bentAssembly: bentCount * s.bentAssemblyPrice,
+        decking: sqft * s.slpDeckingPrice,
+        screws: 0,
+      };
+      mat.subtotal = mat.pilings + mat.stringers + mat.headers + mat.hardware + mat.bentAssembly + mat.decking + mat.screws;
+      mat.dealerProfit = mat.subtotal * (s.dealerProfitPct / 100);
+      mat.total = mat.subtotal + mat.dealerProfit;
+
+      const lab = {
+        pileInstall: pileCount * s.laborPileInstall,
+        headers: pileCount * s.laborHeaders,
+        stringers: 0,
+        decking: s.laborDecking * sqft * 0.05,
+        bentPlacement: pileCount * s.laborBentPlacement,
+      };
+      lab.total = lab.pileInstall + lab.headers + lab.stringers + lab.decking + lab.bentPlacement;
+
+      const overhead = s.mobilization + s.contractorProfit;
+      const grand = mat.total + lab.total + overhead;
+      const weeks = lab.total / s.weeklyLaborEquipment;
+
+      return { mat, lab, overhead, grand, weeks, pileCount, bentCount, sqft };
+    }
+
+    function row(label, value, cls) {
+      return `<tr${cls ? ' class="'+cls+'"' : ''}><td>${label}</td><td>${typeof value === 'number' ? fmt(value) : value}</td></tr>`;
+    }
+    function subRow(label, value) {
+      return `<tr class="subtotal"><td>${label}</td><td>${fmt(value)}</td></tr>`;
+    }
+
+    function updateCards() {
+      const compDeck = document.getElementById('toggleCompDeck').checked;
+      const ecoPile = document.getElementById('toggleEcoPile').checked;
+
+      const w = calcWood(S, compDeck, ecoPile);
+      const c = calcComposite(S);
+
+      let subtitle = 'Standard PT wood construction';
+      if (compDeck && ecoPile) subtitle = 'With EcoPile pilings + WearDeck composite decking';
+      else if (compDeck) subtitle = 'With WearDeck composite decking upgrade';
+      else if (ecoPile) subtitle = 'With EcoPile pilings upgrade';
+      document.getElementById('woodSubtitle').textContent = subtitle;
+
+      const deckLabel = compDeck
+        ? `Decking (WearDeck @ ${fmtDec(w.deckPrice, 2)}/sf)`
+        : `Decking (Wood @ ${fmtDec(w.deckPrice, 2)}/sf)`;
+      const pileLabel = ecoPile
+        ? `Pilings (EcoPile @ ${fmt(w.pilePrice)}/ea × ${w.pileCount})`
+        : `Pilings (PT Wood @ ${fmt(w.pilePrice)}/ea × ${w.pileCount})`;
+
+      document.getElementById('woodMatTable').innerHTML =
+        row(pileLabel, w.mat.pilings) +
+        (w.mat.blackWrap > 0 ? row('Black Pile Wrap', w.mat.blackWrap) : row('Black Pile Wrap', '<span class="dim">N/A</span>')) +
+        row('Stringers (×' + (w.bentCount * 4) + ')', w.mat.stringers) +
+        row('Headers &amp; Blocking (×' + w.bentCount + ')', w.mat.headers) +
+        row('Hardware (×' + w.pileCount + ')', w.mat.hardware) +
+        row(deckLabel, w.mat.decking) +
+        row('Decking Screws', w.mat.screws) +
+        subRow('Total Materials', w.mat.total);
+
+      document.getElementById('woodLabTable').innerHTML =
+        row('Pile Installation (×' + w.pileCount + ')', w.lab.pileInstall) +
+        row('Headers / Bolting (×' + w.bentCount + ')', w.lab.headers) +
+        row('Stringer Install', w.lab.stringers) +
+        row('Decking (' + w.sqft.toLocaleString() + ' sf)', w.lab.decking) +
+        subRow('Total Labor', w.lab.total);
+
+      document.getElementById('woodOhTable').innerHTML =
+        row('Mobilization', S.mobilization) +
+        row('Contractor Profit', S.contractorProfit);
+
+      document.getElementById('woodGrand').textContent = fmt(w.grand);
+      document.getElementById('woodSqft').textContent = fmtDec(w.grand / w.sqft, 2);
+      document.getElementById('woodWeeks').textContent = w.weeks.toFixed(1);
+      document.getElementById('woodPiles').textContent = w.pileCount;
+
+      document.getElementById('compMatTable').innerHTML =
+        row('16" EcoPile (×' + c.pileCount + ')', c.mat.pilings) +
+        row('Eco Stringers (×' + (c.bentCount * 4) + ')', c.mat.stringers) +
+        row('Headers &amp; Blocking (×' + c.bentCount + ')', c.mat.headers) +
+        row('Hardware (×' + c.pileCount + ')', c.mat.hardware) +
+        row('Bent Pre-Assembly (×' + c.bentCount + ')', c.mat.bentAssembly) +
+        row('SLP Decking (' + fmtDec(S.slpDeckingPrice, 2) + '/sf)', c.mat.decking) +
+        row('Dealer Profit (' + S.dealerProfitPct + '%)', c.mat.dealerProfit) +
+        subRow('Total Materials', c.mat.total);
+
+      document.getElementById('compLabTable').innerHTML =
+        row('Pile Installation (×' + c.pileCount + ')', c.lab.pileInstall) +
+        row('Headers / Bolting (×' + c.pileCount + ')', c.lab.headers) +
+        row('Stringer Install', '<span class="dim">Pre-assembled</span>') +
+        row('Decking (5% field labor)', c.lab.decking) +
+        row('Bent Placement (×' + c.pileCount + ')', c.lab.bentPlacement) +
+        subRow('Total Labor', c.lab.total);
+
+      document.getElementById('compOhTable').innerHTML =
+        row('Mobilization', S.mobilization) +
+        row('Contractor Profit', S.contractorProfit);
+
+      document.getElementById('compGrand').textContent = fmt(c.grand);
+      document.getElementById('compSqft').textContent = fmtDec(c.grand / c.sqft, 2);
+      document.getElementById('compWeeks').textContent = c.weeks.toFixed(1);
+      document.getElementById('compPiles').textContent = c.pileCount;
+
+      const diff = c.grand - w.grand;
+      const diffPct = (c.grand / w.grand) - 1;
+      const banner = document.getElementById('savingsBanner');
+      const matPctDiff = (c.mat.total / w.mat.total) - 1;
+      const labPctDiff = (c.lab.total / w.lab.total) - 1;
+
+      if (diff <= 0) {
+        banner.className = 'savings-banner is-saving';
+        document.getElementById('savingsText').innerHTML =
+          `Save <span class="amount">${fmt(Math.abs(diff))}</span> with Shoreline Composite`;
+        document.getElementById('savingsDetail').innerHTML =
+          `${pct(matPctDiff)} materials &bull; ${pct(labPctDiff)} labor<br>Net savings of ${(Math.abs(diffPct) * 100).toFixed(1)}% vs current wood config`;
+      } else {
+        banner.className = 'savings-banner is-more';
+        document.getElementById('savingsText').innerHTML =
+          `Only <span class="amount">${fmt(diff)}</span> more for full composite`;
+        document.getElementById('savingsDetail').innerHTML =
+          `${pct(labPctDiff)} labor savings offsets ${pct(matPctDiff)} material cost<br>Installs ${(w.weeks / c.weeks).toFixed(1)}× faster with lifetime durability`;
+      }
+
+      const timesF = w.weeks / c.weeks;
+      document.getElementById('kmMatDiff').textContent = pct(matPctDiff);
+      document.getElementById('kmMatDiff').style.color = matPctDiff > 0 ? 'var(--coral)' : 'var(--green)';
+      document.getElementById('kmLabSave').textContent = pct(labPctDiff);
+      document.getElementById('kmLabSave').style.color = labPctDiff < 0 ? 'var(--green)' : 'var(--coral)';
+      document.getElementById('kmTimeSave').textContent = timesF.toFixed(1) + '×';
+      document.getElementById('kmTotalDiff').textContent = pct(diffPct);
+      document.getElementById('kmTotalDiff').style.color = diffPct <= 0 ? 'var(--green)' : 'var(--coral)';
+    }
+
+    let chart;
+    const totalLabelPlugin = {
+      id: 'totalLabel',
+      afterDatasetsDraw(ch) {
+        const { ctx } = ch;
+        const lastDS = ch.data.datasets.length - 1;
+        ch.data.datasets[0].data.forEach((_, i) => {
+          let total = 0;
+          ch.data.datasets.forEach(ds => { total += ds.data[i]; });
+          const meta = ch.getDatasetMeta(lastDS);
+          const bar = meta.data[i];
+          if (!bar) return;
+          ctx.save();
+          ctx.textAlign = 'center';
+          ctx.fillStyle = '#1e293b';
+          ctx.font = "bold 12px 'Plus Jakarta Sans', sans-serif";
+          ctx.fillText('$' + Math.round(total).toLocaleString(), bar.x, bar.y - 10);
+          ctx.restore();
+        });
+      }
+    };
+
+    function initChart() {
+      const ctx = document.getElementById('compChart').getContext('2d');
+      chart = new Chart(ctx, {
+        type: 'bar',
+        plugins: [totalLabelPlugin],
+        data: {
+          labels: ['All Wood', 'Wood +\nComp. Deck', 'Wood +\nEcoPile', 'Wood +\nBoth', 'Shoreline\nComposite'],
+          datasets: [
+            { label: 'Materials', data: [0,0,0,0,0], backgroundColor: 'rgba(13, 115, 119, 0.8)', borderRadius: 3 },
+            { label: 'Labor', data: [0,0,0,0,0], backgroundColor: 'rgba(244, 132, 95, 0.8)', borderRadius: 3 },
+            { label: 'Overhead', data: [0,0,0,0,0], backgroundColor: 'rgba(148, 163, 184, 0.7)', borderRadius: {topLeft: 3, topRight: 3} },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: { duration: 600, easing: 'easeOutQuart' },
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: { font: { family: "'Plus Jakarta Sans'", size: 12, weight: '600' }, padding: 20, usePointStyle: true, pointStyle: 'rectRounded' },
+            },
+            tooltip: {
+              backgroundColor: 'rgba(15,23,42,0.9)',
+              titleFont: { family: "'Plus Jakarta Sans'", size: 13, weight: '700' },
+              bodyFont: { family: "'JetBrains Mono'", size: 12 },
+              padding: 12,
+              cornerRadius: 8,
+              callbacks: {
+                label: function(ctx) { return ' ' + ctx.dataset.label + ': $' + Math.round(ctx.raw).toLocaleString(); }
+              },
+            },
+          },
+          scales: {
+            x: {
+              stacked: true,
+              grid: { display: false },
+              ticks: { font: { family: "'Plus Jakarta Sans'", size: 11, weight: '600' }, color: '#64748b' },
+            },
+            y: {
+              stacked: true,
+              grid: { color: '#f1f5f9' },
+              ticks: {
+                font: { family: "'JetBrains Mono'", size: 11 },
+                color: '#94a3b8',
+                callback: function(val) { return '$' + (val / 1000).toFixed(0) + 'k'; },
+              },
+              suggestedMax: 120000,
+            },
+          },
+        },
+      });
+    }
+
+    function updateChart() {
+      const allWood = calcWood(S, false, false);
+      const wCompDeck = calcWood(S, true, false);
+      const wEcoPile = calcWood(S, false, true);
+      const wBoth = calcWood(S, true, true);
+      const comp = calcComposite(S);
+      const oh = S.mobilization + S.contractorProfit;
+
+      chart.data.datasets[0].data = [allWood.mat.total, wCompDeck.mat.total, wEcoPile.mat.total, wBoth.mat.total, comp.mat.total];
+      chart.data.datasets[1].data = [allWood.lab.total, wCompDeck.lab.total, wEcoPile.lab.total, wBoth.lab.total, comp.lab.total];
+      chart.data.datasets[2].data = [oh, oh, oh, oh, oh];
+
+      const maxTotal = Math.max(allWood.grand, wCompDeck.grand, wEcoPile.grand, wBoth.grand, comp.grand);
+      chart.options.scales.y.suggestedMax = maxTotal * 1.12;
+      chart.update();
+    }
+
+    function updatePrintTable() {
+      const compDeck = document.getElementById('toggleCompDeck').checked;
+      const ecoPile = document.getElementById('toggleEcoPile').checked;
+      const w = calcWood(S, compDeck, ecoPile);
+      const c = calcComposite(S);
+
+      let woodLabel = 'Traditional Wood';
+      if (compDeck && ecoPile) woodLabel = 'Wood + EcoPile + Comp. Deck';
+      else if (compDeck) woodLabel = 'Wood + Composite Deck';
+      else if (ecoPile) woodLabel = 'Wood + EcoPile';
+
+      const sqft = S.dockLength * S.dockWidth;
+      document.getElementById('printConfig').textContent =
+        `${S.dockLength}ft × ${S.dockWidth}ft walkway (${sqft.toLocaleString()} sq ft) | Generated ${new Date().toLocaleDateString()}`;
+
+      const r = (lbl, wVal, cVal) => `<tr><td>${lbl}</td><td>${typeof wVal === 'number' ? fmt(wVal) : wVal}</td><td>${typeof cVal === 'number' ? fmt(cVal) : cVal}</td><td>${typeof wVal === 'number' && typeof cVal === 'number' ? fmt(cVal - wVal) : '—'}</td></tr>`;
+      const sec = (lbl) => `<tr class="sec-row"><td colspan="4">${lbl}</td></tr>`;
+      const sub = (lbl, wVal, cVal) => `<tr class="sub-row"><td>${lbl}</td><td>${fmt(wVal)}</td><td>${fmt(cVal)}</td><td>${fmt(cVal - wVal)}</td></tr>`;
+      const tot = (lbl, wVal, cVal) => `<tr class="total-row"><td>${lbl}</td><td>${fmt(wVal)}</td><td>${fmt(cVal)}</td><td>${fmt(cVal - wVal)}</td></tr>`;
+
+      document.getElementById('printTable').innerHTML =
+        `<thead><tr><th>Item</th><th>${woodLabel}</th><th>Shoreline Composite</th><th>Difference</th></tr></thead><tbody>` +
+        sec('MATERIALS') +
+        r('Pilings', w.mat.pilings, c.mat.pilings) +
+        r('Black Pile Wrap', w.mat.blackWrap || '—', '—') +
+        r('Stringers', w.mat.stringers, c.mat.stringers) +
+        r('Headers &amp; Blocking', w.mat.headers, c.mat.headers) +
+        r('Hardware', w.mat.hardware, c.mat.hardware) +
+        r('Bent Assembly', '—', c.mat.bentAssembly) +
+        r('Decking', w.mat.decking, c.mat.decking) +
+        r('Decking Screws', w.mat.screws, 0) +
+        r('Dealer Profit', '—', c.mat.dealerProfit) +
+        sub('TOTAL MATERIALS', w.mat.total, c.mat.total) +
+        sec('LABOR') +
+        r('Pile Installation', w.lab.pileInstall, c.lab.pileInstall) +
+        r('Headers / Bolting', w.lab.headers, c.lab.headers) +
+        r('Stringer Install', w.lab.stringers, 0) +
+        r('Decking', w.lab.decking, c.lab.decking) +
+        r('Bent Placement', '—', c.lab.bentPlacement) +
+        sub('TOTAL LABOR', w.lab.total, c.lab.total) +
+        sec('OVERHEAD') +
+        r('Mobilization', S.mobilization, S.mobilization) +
+        r('Contractor Profit', S.contractorProfit, S.contractorProfit) +
+        tot('GRAND TOTAL', w.grand, c.grand) +
+        `<tr><td>Cost per sq ft</td><td>${fmtDec(w.grand / sqft, 2)}</td><td>${fmtDec(c.grand / sqft, 2)}</td><td>${fmtDec((c.grand - w.grand) / sqft, 2)}</td></tr>` +
+        `<tr><td>Estimated Install Time</td><td>${w.weeks.toFixed(1)} weeks</td><td>${c.weeks.toFixed(1)} weeks</td><td>${(c.weeks - w.weeks).toFixed(1)} weeks</td></tr>` +
+        '</tbody>';
+    }
+
+    function updateAll() {
+      updateCards();
+      updateChart();
+      updatePrintTable();
+      updateSpreadsheetComputed();
+    }
+
+    function syncSettingsToUI() {
+      document.querySelectorAll('.sheet-cell').forEach(input => {
+        const key = input.dataset.key;
+        if (key && S[key] !== undefined) input.value = S[key];
+      });
+      document.getElementById('lengthSlider').value = S.dockLength;
+      document.getElementById('lengthDisplay').textContent = S.dockLength;
+      document.getElementById('widthInput').value = S.dockWidth;
+    }
+
+    function toggleSettings() {
+      const panel = document.getElementById('settingsPanel');
+      const bk = document.getElementById('backdrop');
+      const isOpen = panel.classList.contains('open');
+      panel.classList.toggle('open');
+      bk.classList.toggle('open');
+      if (!isOpen) syncSettingsToUI();
+    }
+
+    function resetDefaults() {
+      S = { ...DEFAULTS };
+      syncSettingsToUI();
+      document.getElementById('toggleCompDeck').checked = false;
+      document.getElementById('toggleEcoPile').checked = false;
+      updateAll();
+    }
+
+    function exportPDF() {
+      window.print();
+    }
+
+    /* ─── AI CHAT ─── */
+    let chatWS = null;
+    let chatOpen = false;
+    let chatWaiting = false;
+
+    function setConnected(on) {
+      document.getElementById('chatStatus').classList.toggle('connected', on);
+      const hdr = document.getElementById('chatStatusHeader');
+      if (hdr) hdr.classList.toggle('connected', on);
+    }
+
+    function connectChat() {
+      const host = window.location.hostname || 'localhost';
+      const wsUrl = `ws://${host}:8766`;
+      chatWS = new WebSocket(wsUrl);
+
+      chatWS.onopen = () => setConnected(true);
+
+      chatWS.onclose = () => {
+        setConnected(false);
+        setTimeout(connectChat, 3000);
+      };
+
+      chatWS.onerror = () => setConnected(false);
+
+      chatWS.onmessage = (event) => {
+        chatWaiting = false;
+        removeThinking();
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type === 'error') {
+            addChatMsg(data.message, 'error');
+          } else {
+            addChatMsg(data.message, 'ai');
+            if (data.state_changes && data.state_changes.length > 0) {
+              data.state_changes.forEach(sc => {
+                if (S.hasOwnProperty(sc.key)) {
+                  S[sc.key] = sc.value;
+                }
+              });
+              syncSettingsToUI();
+              updateAll();
+              const keys = data.state_changes.map(sc => sc.key + '=' + sc.value).join(', ');
+              addChatMsg('Updated: ' + keys, 'system');
+            }
+          }
+        } catch (e) {
+          addChatMsg('Failed to parse response.', 'error');
+        }
+        document.getElementById('chatSendBtn').disabled = false;
+        document.getElementById('chatInput').disabled = false;
+        document.getElementById('chatInput').focus();
+      };
+    }
+
+    function toggleChat() {
+      chatOpen = !chatOpen;
+      document.getElementById('chatSidebar').classList.toggle('open', chatOpen);
+      document.body.classList.toggle('chat-open', chatOpen);
+      if (chatOpen) document.getElementById('chatInput').focus();
+    }
+
+    function addChatMsg(text, type) {
+      const msgs = document.getElementById('chatMessages');
+      const div = document.createElement('div');
+      div.className = 'chat-msg ' + type;
+      div.textContent = text;
+      msgs.appendChild(div);
+      msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    function showThinking() {
+      const msgs = document.getElementById('chatMessages');
+      const div = document.createElement('div');
+      div.className = 'chat-thinking';
+      div.id = 'chatThinking';
+      div.innerHTML = '<span></span><span></span><span></span>';
+      msgs.appendChild(div);
+      msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    function removeThinking() {
+      const el = document.getElementById('chatThinking');
+      if (el) el.remove();
+    }
+
+    function sendChat() {
+      const input = document.getElementById('chatInput');
+      const msg = input.value.trim();
+      if (!msg || chatWaiting) return;
+      if (!chatWS || chatWS.readyState !== WebSocket.OPEN) {
+        addChatMsg('Not connected to server. Retrying...', 'error');
+        connectChat();
+        return;
+      }
+
+      addChatMsg(msg, 'user');
+      input.value = '';
+      chatWaiting = true;
+      document.getElementById('chatSendBtn').disabled = true;
+      document.getElementById('chatInput').disabled = true;
+      showThinking();
+
+      chatWS.send(JSON.stringify({
+        message: msg,
+        state: { ...S },
+      }));
+    }
+
+    /* ─── SPREADSHEET VIEW ─── */
+    let ssBuilt = false;
+
+    function openSpreadsheet() {
+      document.getElementById('ssOverlay').classList.add('open');
+      buildSpreadsheet();
+      updateSpreadsheetComputed();
+      ssBuilt = true;
+      const body = document.querySelector('.ss-body');
+      body.scrollTop = 0;
+      body.scrollLeft = 0;
+    }
+    function closeSpreadsheet() {
+      document.getElementById('ssOverlay').classList.remove('open');
+    }
+
+    function ssInput(key, step) {
+      return `<td class="ss-input-td"><input type="number" class="ss-cell" data-key="${key}" value="${S[key]}" step="${step||1}"></td>`;
+    }
+    function ssComp(id, val, cls) {
+      const extra = cls ? ' ' + cls : '';
+      return `<td class="ss-colC ss-computed${extra}" id="${id}">${val}</td>`;
+    }
+    function ssDiff(id, val) {
+      const n = typeof val === 'number' ? val : 0;
+      const cls = n < 0 ? 'ss-neg' : n > 0 ? 'ss-pos' : '';
+      return `<td class="ss-colG ss-computed ${cls}" id="${id}">${typeof val === 'number' ? fmt(val) : val}</td>`;
+    }
+
+    function buildSpreadsheet() {
+      const w = calcWood(S, false, false);
+      const c = calcComposite(S);
+      const sqft = S.dockLength * S.dockWidth;
+      const oh = S.mobilization + S.contractorProfit;
+
+      const colHead = `<thead><tr>
+        <th></th><th style="min-width:200px">A</th><th style="min-width:90px">B</th><th style="min-width:110px">C</th>
+        <th style="min-width:16px"></th>
+        <th style="min-width:90px">E</th><th style="min-width:110px">F</th><th style="min-width:110px">G</th>
+      </tr></thead>`;
+
+      function rn(n) { return `<td class="ss-rn">${n}</td>`; }
+      const D = '<td class="ss-colD"></td>';
+
+      let html = colHead + '<tbody>';
+
+      // Row 1: Title
+      html += `<tr><td class="ss-rn">1</td><td colspan="7" style="font-weight:700;font-size:12px;background:#e3f2fd;color:#1565c0;font-family:'Plus Jakarta Sans',sans-serif">
+        Wood docks vs. all composite dock with 2x12" Ecostringers with 16" mono Ecopile and pre-assembled bents</td></tr>`;
+      html += `<tr class="ss-empty">${rn(2)}<td colspan="7"></td></tr>`;
+
+      // Rows 3-8: Reference prices
+      html += `<tr class="ss-section">${rn('')}<td colspan="7">REFERENCE PRICES</td></tr>`;
+      html += `<tr>${rn(3)}<td>10" Piling (16')</td>${ssInput('woodPilePrice',1)}<td class="ss-dim">each</td>${D}<td>EcoPile 16"</td>${ssInput('ecopile16Price',1)}<td class="ss-dim">each</td></tr>`;
+      html += `<tr>${rn(4)}<td>Black Pile Wrap</td>${ssInput('blackWrapPrice',1)}<td class="ss-dim">each</td>${D}<td>Eco Stringer (2x12x20')</td>${ssInput('ecoStringerPrice',1)}<td class="ss-dim">each</td></tr>`;
+      html += `<tr>${rn(5)}<td>Wood Stringer (2x10x12')</td>${ssInput('woodStringerPrice',0.5)}<td class="ss-dim">each</td>${D}<td>SLP Decking</td>${ssInput('slpDeckingPrice',0.25)}<td class="ss-dim">per sf</td></tr>`;
+      html += `<tr>${rn(6)}<td>Wood Decking</td>${ssInput('woodDeckingPrice',0.01)}<td class="ss-dim">per sf</td>${D}<td>Headers &amp; Blocking (comp)</td>${ssInput('compositeHeaderPrice',10)}<td class="ss-dim">per bent</td></tr>`;
+      html += `<tr>${rn(7)}<td>WearDeck Composite Decking</td>${ssInput('wearDeckPrice',0.25)}<td class="ss-dim">per sf</td>${D}<td>Hardware (comp)</td>${ssInput('compositeHardwarePrice',1)}<td class="ss-dim">per pile</td></tr>`;
+      html += `<tr>${rn(8)}<td>Headers &amp; Blocking (wood)</td>${ssInput('woodHeaderPrice',1)}<td class="ss-dim">per bent</td>${D}<td>Bent Pre-Assembly</td>${ssInput('bentAssemblyPrice',10)}<td class="ss-dim">per bent</td></tr>`;
+      html += `<tr>${rn(9)}<td>Hardware (wood)</td>${ssInput('woodHardwarePrice',1)}<td class="ss-dim">per pile</td>${D}<td>Dealer Profit Margin</td>${ssInput('dealerProfitPct',1)}<td class="ss-dim">%</td></tr>`;
+      html += `<tr>${rn(10)}<td>Decking Screws (flat)</td>${ssInput('deckingScrews',50)}<td class="ss-dim">total</td>${D}<td></td><td></td><td></td></tr>`;
+
+      html += `<tr class="ss-empty">${rn(11)}<td colspan="7"></td></tr>`;
+
+      // Rows 12-13: Labor rates
+      html += `<tr class="ss-section">${rn('')}<td colspan="7">LABOR RATES</td></tr>`;
+      html += `<tr>${rn(12)}<td>Pile Install</td>${ssInput('laborPileInstall',10)}<td class="ss-dim">per pile</td>${D}<td>Bent Placement</td>${ssInput('laborBentPlacement',10)}<td class="ss-dim">per bent</td></tr>`;
+      html += `<tr>${rn(13)}<td>Header / Bolting</td>${ssInput('laborHeaders',10)}<td class="ss-dim">per bent</td>${D}<td>Weekly Labor &amp; Equipment</td>${ssInput('weeklyLaborEquipment',100)}<td class="ss-dim">per week</td></tr>`;
+      html += `<tr>${rn(14)}<td>Stringer Install</td>${ssInput('laborStringerInstall',5)}<td class="ss-dim">per set</td>${D}<td>Mobilization</td>${ssInput('mobilization',500)}<td class="ss-dim">flat</td></tr>`;
+      html += `<tr>${rn(15)}<td>Decking Labor</td>${ssInput('laborDecking',0.5)}<td class="ss-dim">per sf</td>${D}<td>Contractor Profit</td>${ssInput('contractorProfit',1000)}<td class="ss-dim">flat</td></tr>`;
+
+      html += `<tr class="ss-empty">${rn(16)}<td colspan="7"></td></tr>`;
+
+      // Rows 17-18: Dock configuration
+      html += `<tr class="ss-section">${rn('')}<td colspan="7">DOCK CONFIGURATION</td></tr>`;
+      html += `<tr>${rn(17)}<td class="ss-label-bold">Dock Length</td>${ssInput('dockLength',10)}<td class="ss-dim">ft</td>${D}<td class="ss-label-bold">Dock Width</td>${ssInput('dockWidth',1)}<td class="ss-dim">ft</td></tr>`;
+      html += `<tr>${rn(18)}<td>Composite Deck Multiplier</td>${ssInput('compositeDeckMultiplier',0.1)}<td class="ss-dim">× wood</td>${D}<td>EcoPile Multiplier</td>${ssInput('ecopileMultiplier',0.1)}<td class="ss-dim">× wood</td></tr>`;
+
+      html += `<tr class="ss-empty">${rn(19)}<td colspan="7"></td></tr>`;
+      html += `<tr class="ss-empty">${rn(20)}<td colspan="7"></td></tr>`;
+
+      // Row 22+: Comparison section headers
+      html += `<tr class="ss-header-row">${rn(22)}<td></td><td colspan="2" style="text-align:center">Wood Dock w/ Wood Decking</td>${D}<td colspan="2" style="text-align:center">16" Mono EcoPile + Assembled Bents</td><td></td></tr>`;
+      html += `<tr>${rn(23)}<td></td><td style="text-align:center;font-weight:600;color:#666;font-size:11px">Qty / Rate</td><td style="text-align:center;font-weight:600;color:#666;font-size:11px">Cost</td>${D}<td style="text-align:center;font-weight:600;color:#666;font-size:11px">Qty / Rate</td><td style="text-align:center;font-weight:600;color:#666;font-size:11px">Cost</td><td style="text-align:center;font-weight:600;color:#666;font-size:11px">$ Difference</td></tr>`;
+
+      // Row 24: Piling spacing
+      html += `<tr>${rn(24)}<td class="ss-label-bold">Piling Spacing (ft)</td>${ssInput('woodPileSpacing',1)}<td class="ss-dim">ft</td>${D}${ssInput('compositePileSpacing',1)}<td class="ss-dim">ft</td><td></td></tr>`;
+
+      html += `<tr class="ss-empty">${rn(25)}<td colspan="7"></td></tr>`;
+
+      // Materials section
+      html += `<tr class="ss-section">${rn('')}<td colspan="7">MATERIALS</td></tr>`;
+      html += `<tr>${rn(26)}<td>Piling / Count</td><td class="ss-colB ss-computed" id="ss_w_pileCount">${w.pileCount}</td>${ssComp('ss_w_pilingCost',fmt(w.mat.pilings))}${D}<td class="ss-colE ss-computed" id="ss_c_pileCount">${c.pileCount}</td>${ssComp('ss_c_pilingCost',fmt(c.mat.pilings))}${ssDiff('ss_d_piling',c.mat.pilings-w.mat.pilings)}</tr>`;
+      html += `<tr>${rn(27)}<td>Black Pile Wrap</td><td class="ss-colB">${fmtDec(S.blackWrapPrice,0)}</td>${ssComp('ss_w_wrapCost',fmt(w.mat.blackWrap))}${D}<td class="ss-colE ss-dim">N/A</td><td class="ss-colF ss-dim">—</td>${ssDiff('ss_d_wrap',0-w.mat.blackWrap)}</tr>`;
+      html += `<tr>${rn(28)}<td>Stringers</td><td class="ss-colB">${fmtDec(S.woodStringerPrice,0)} × ${w.bentCount*4}</td>${ssComp('ss_w_stringerCost',fmt(w.mat.stringers))}${D}<td class="ss-colE">${fmtDec(S.ecoStringerPrice,0)} × ${c.bentCount*4}</td>${ssComp('ss_c_stringerCost',fmt(c.mat.stringers))}${ssDiff('ss_d_stringer',c.mat.stringers-w.mat.stringers)}</tr>`;
+      html += `<tr>${rn(29)}<td>Headers &amp; Blocking</td><td class="ss-colB">${fmtDec(S.woodHeaderPrice,0)} × ${w.bentCount}</td>${ssComp('ss_w_headerCost',fmt(w.mat.headers))}${D}<td class="ss-colE">${fmtDec(S.compositeHeaderPrice,0)} × ${c.bentCount}</td>${ssComp('ss_c_headerCost',fmt(c.mat.headers))}${ssDiff('ss_d_header',c.mat.headers-w.mat.headers)}</tr>`;
+      html += `<tr>${rn(30)}<td>Hardware</td><td class="ss-colB">${fmtDec(S.woodHardwarePrice,0)} × ${w.pileCount}</td>${ssComp('ss_w_hardwareCost',fmt(w.mat.hardware))}${D}<td class="ss-colE">${fmtDec(S.compositeHardwarePrice,0)} × ${c.pileCount}</td>${ssComp('ss_c_hardwareCost',fmt(c.mat.hardware))}${ssDiff('ss_d_hardware',c.mat.hardware-w.mat.hardware)}</tr>`;
+      html += `<tr>${rn(31)}<td>Bent Pre-Assembly</td><td class="ss-colB ss-dim">—</td><td class="ss-colC ss-dim">—</td>${D}<td class="ss-colE">${fmtDec(S.bentAssemblyPrice,0)} × ${c.bentCount}</td>${ssComp('ss_c_bentCost',fmt(c.mat.bentAssembly))}${ssDiff('ss_d_bent',c.mat.bentAssembly)}</tr>`;
+      html += `<tr>${rn(32)}<td>Decking</td><td class="ss-colB">${fmtDec(S.woodDeckingPrice,2)}/sf</td>${ssComp('ss_w_deckingCost',fmt(w.mat.decking))}${D}<td class="ss-colE">${fmtDec(S.slpDeckingPrice,2)}/sf</td>${ssComp('ss_c_deckingCost',fmt(c.mat.decking))}${ssDiff('ss_d_decking',c.mat.decking-w.mat.decking)}</tr>`;
+      html += `<tr>${rn(33)}<td>Decking Screws</td><td class="ss-colB">${fmt(S.deckingScrews)}</td>${ssComp('ss_w_screwsCost',fmt(w.mat.screws))}${D}<td class="ss-colE ss-dim">—</td><td class="ss-colF ss-computed">$0</td>${ssDiff('ss_d_screws',0-w.mat.screws)}</tr>`;
+
+      // Material subtotal
+      html += `<tr class="ss-subtotal">${rn(34)}<td>Total Material Only</td><td></td>${ssComp('ss_w_matTotal',fmt(w.mat.total))}${D}<td></td>${ssComp('ss_c_matSub',fmt(c.mat.subtotal))}<td></td></tr>`;
+      html += `<tr>${rn(35)}<td>Dealer Profit (${S.dealerProfitPct}%)</td><td class="ss-dim"></td><td class="ss-dim">—</td>${D}<td class="ss-dim">${S.dealerProfitPct}%</td>${ssComp('ss_c_dealerProfit',fmt(c.mat.dealerProfit))}<td></td></tr>`;
+      html += `<tr class="ss-subtotal">${rn(37)}<td>Total Material w/ Dealer</td><td></td><td class="ss-computed" id="ss_w_matTotal2">${fmt(w.mat.total)}</td>${D}<td></td>${ssComp('ss_c_matTotal',fmt(c.mat.total))}${ssDiff('ss_d_matTotal',c.mat.total-w.mat.total)}</tr>`;
+
+      html += `<tr class="ss-empty">${rn(38)}<td colspan="7"></td></tr>`;
+      html += `<tr>${rn(39)}<td class="ss-label-bold">Material Cost % Difference</td><td></td><td></td>${D}<td></td><td class="ss-computed" id="ss_matPct">${pct((c.mat.total/w.mat.total)-1)}</td><td class="ss-dim">vs wood</td></tr>`;
+      html += `<tr class="ss-empty">${rn(40)}<td colspan="7"></td></tr>`;
+
+      // Labor section
+      html += `<tr class="ss-section">${rn('')}<td colspan="7">LABOR</td></tr>`;
+      html += `<tr>${rn(42)}<td>Pile Installation</td><td class="ss-colB">${fmt(S.laborPileInstall)} × ${w.pileCount}</td>${ssComp('ss_w_labPile',fmt(w.lab.pileInstall))}${D}<td class="ss-colE">${fmt(S.laborPileInstall)} × ${c.pileCount}</td>${ssComp('ss_c_labPile',fmt(c.lab.pileInstall))}${ssDiff('ss_d_labPile',c.lab.pileInstall-w.lab.pileInstall)}</tr>`;
+      html += `<tr>${rn(43)}<td>Headers / Bolting</td><td class="ss-colB">${fmt(S.laborHeaders)} × ${w.bentCount}</td>${ssComp('ss_w_labHeader',fmt(w.lab.headers))}${D}<td class="ss-colE">${fmt(S.laborHeaders)} × ${c.pileCount}</td>${ssComp('ss_c_labHeader',fmt(c.lab.headers))}${ssDiff('ss_d_labHeader',c.lab.headers-w.lab.headers)}</tr>`;
+      html += `<tr>${rn(44)}<td>Stringer Install</td><td class="ss-colB">${fmt(S.laborStringerInstall)} × ${w.bentCount} × 3</td>${ssComp('ss_w_labStringer',fmt(w.lab.stringers))}${D}<td class="ss-colE ss-dim">Pre-assembled</td><td class="ss-colF ss-computed">$0</td>${ssDiff('ss_d_labStringer',0-w.lab.stringers)}</tr>`;
+      html += `<tr>${rn(45)}<td>Decking</td><td class="ss-colB">${fmtDec(S.laborDecking,0)}/sf × ${sqft.toLocaleString()}</td>${ssComp('ss_w_labDecking',fmt(w.lab.decking))}${D}<td class="ss-colE">5% field</td>${ssComp('ss_c_labDecking',fmt(c.lab.decking))}${ssDiff('ss_d_labDecking',c.lab.decking-w.lab.decking)}</tr>`;
+      html += `<tr>${rn(47)}<td>Bent Placement</td><td class="ss-colB ss-dim">—</td><td class="ss-colC ss-dim">—</td>${D}<td class="ss-colE">${fmt(S.laborBentPlacement)} × ${c.pileCount}</td>${ssComp('ss_c_labBent',fmt(c.lab.bentPlacement))}${ssDiff('ss_d_labBent',c.lab.bentPlacement)}</tr>`;
+
+      html += `<tr class="ss-subtotal">${rn(48)}<td>TOTAL LABOR COST</td><td></td>${ssComp('ss_w_labTotal',fmt(w.lab.total))}${D}<td></td>${ssComp('ss_c_labTotal',fmt(c.lab.total))}${ssDiff('ss_d_labTotal',c.lab.total-w.lab.total)}</tr>`;
+      html += `<tr>${rn(49)}<td>Weekly Labor &amp; Equipment</td><td class="ss-colB">${fmt(S.weeklyLaborEquipment)}</td><td></td>${D}<td class="ss-colE">${fmt(S.weeklyLaborEquipment)}</td><td></td><td></td></tr>`;
+      html += `<tr>${rn(50)}<td>Estimated Install Time</td><td></td><td class="ss-computed" id="ss_w_weeks">${w.weeks.toFixed(1)} weeks</td>${D}<td></td><td class="ss-computed" id="ss_c_weeks">${c.weeks.toFixed(1)} weeks</td><td></td></tr>`;
+      html += `<tr>${rn(51)}<td class="ss-label-bold">Labor Savings</td><td></td><td></td>${D}<td></td><td class="ss-computed" id="ss_labPct">${pct((c.lab.total/w.lab.total)-1)}</td><td class="ss-dim">vs wood</td></tr>`;
+
+      html += `<tr class="ss-empty">${rn('')}<td colspan="7"></td></tr>`;
+
+      // Overhead
+      html += `<tr class="ss-section">${rn('')}<td colspan="7">OVERHEAD</td></tr>`;
+      html += `<tr>${rn(52)}<td>Mobilization</td><td class="ss-colB">${fmt(S.mobilization)}</td><td class="ss-computed">${fmt(S.mobilization)}</td>${D}<td class="ss-colE">${fmt(S.mobilization)}</td><td class="ss-computed">${fmt(S.mobilization)}</td><td class="ss-computed">$0</td></tr>`;
+      html += `<tr>${rn(53)}<td>Contractor Profit</td><td class="ss-colB">${fmt(S.contractorProfit)}</td><td class="ss-computed">${fmt(S.contractorProfit)}</td>${D}<td class="ss-colE">${fmt(S.contractorProfit)}</td><td class="ss-computed">${fmt(S.contractorProfit)}</td><td class="ss-computed">$0</td></tr>`;
+
+      // Grand total
+      html += `<tr class="ss-grandtotal">${rn(54)}<td>GRAND TOTAL</td><td></td>${ssComp('ss_w_grand',fmt(w.grand))}${D}<td></td>${ssComp('ss_c_grand',fmt(c.grand))}${ssDiff('ss_d_grand',c.grand-w.grand)}</tr>`;
+
+      html += `<tr class="ss-empty">${rn(55)}<td colspan="7"></td></tr>`;
+      html += `<tr>${rn(56)}<td class="ss-label-bold">Total Cost % Difference</td><td></td><td></td>${D}<td></td><td class="ss-computed" id="ss_totalPct">${pct((c.grand/w.grand)-1)}</td><td></td></tr>`;
+
+      html += `<tr class="ss-empty">${rn('')}<td colspan="7"></td></tr>`;
+      html += `<tr class="ss-section">${rn('')}<td colspan="7">COST PER SQUARE FOOT (${sqft.toLocaleString()} sf)</td></tr>`;
+      html += `<tr>${rn(57)}<td>Material Only</td><td class="ss-colB">${sqft.toLocaleString()} sf</td><td class="ss-computed" id="ss_w_sqftMat">${fmtDec(w.mat.total/sqft,2)}</td>${D}<td></td><td class="ss-computed" id="ss_c_sqftMat">${fmtDec(c.mat.total/sqft,2)}</td><td class="ss-computed" id="ss_d_sqftMat">${pct((c.mat.total/sqft)/(w.mat.total/sqft)-1)}</td></tr>`;
+      html += `<tr>${rn(58)}<td>Labor Only</td><td class="ss-colB">${sqft.toLocaleString()} sf</td><td class="ss-computed" id="ss_w_sqftLab">${fmtDec(w.lab.total/sqft,2)}</td>${D}<td></td><td class="ss-computed" id="ss_c_sqftLab">${fmtDec(c.lab.total/sqft,2)}</td><td class="ss-computed" id="ss_d_sqftLab">${pct((c.lab.total/sqft)/(w.lab.total/sqft)-1)}</td></tr>`;
+      html += `<tr class="ss-subtotal">${rn(59)}<td>Total per sf</td><td class="ss-colB">${sqft.toLocaleString()} sf</td><td class="ss-computed" id="ss_w_sqftTotal" style="font-size:13px">${fmtDec(w.grand/sqft,2)}</td>${D}<td></td><td class="ss-computed" id="ss_c_sqftTotal" style="font-size:13px">${fmtDec(c.grand/sqft,2)}</td><td class="ss-computed" id="ss_d_sqftTotal">${pct((c.grand/sqft)/(w.grand/sqft)-1)}</td></tr>`;
+
+      html += `<tr class="ss-empty">${rn('')}<td colspan="7"></td></tr>`;
+      html += `<tr class="ss-note">${rn('')}<td colspan="7">Note: This is a cost comparison for the substructure only. Does not include boathouse, boatlift, electrical, or plumbing. Yellow cells are editable — change values to recalculate.</td></tr>`;
+
+      html += '</tbody>';
+      document.getElementById('ssTable').innerHTML = html;
+      attachSSListeners();
+    }
+
+    function updateSpreadsheetComputed() {
+      if (!ssBuilt || !document.getElementById('ssOverlay').classList.contains('open')) return;
+      buildSpreadsheet();
+    }
+
+    function attachSSListeners() {
+      document.querySelectorAll('#ssTable .ss-cell').forEach(input => {
+        input.addEventListener('change', function() {
+          const key = this.dataset.key;
+          if (!key) return;
+          S[key] = parseFloat(this.value) || 0;
+          if (key === 'dockLength') {
+            document.getElementById('lengthSlider').value = Math.max(60, Math.min(500, S.dockLength));
+            document.getElementById('lengthDisplay').textContent = S.dockLength;
+          }
+          if (key === 'dockWidth') {
+            document.getElementById('widthInput').value = S.dockWidth;
+          }
+          syncSettingsToUI();
+          updateAll();
+          buildSpreadsheet();
+          const newInput = document.querySelector(`#ssTable .ss-cell[data-key="${key}"]`);
+          if (newInput) newInput.focus();
+        });
+
+        input.addEventListener('focus', function() {
+          const key = this.dataset.key;
+          document.getElementById('ssCellRef').textContent = key || '—';
+          document.getElementById('ssFormulaText').textContent = key ? `Input: ${key} = ${this.value}` : '';
+        });
+      });
+
+      document.querySelectorAll('#ssTable .ss-computed').forEach(cell => {
+        cell.addEventListener('click', function() {
+          const id = this.id;
+          document.getElementById('ssCellRef').textContent = id || '—';
+          document.getElementById('ssFormulaText').textContent = `Computed: ${this.textContent}`;
+        });
+      });
+    }
+
+    function init() {
+      syncSettingsToUI();
+      initChart();
+      updateAll();
+      connectChat();
+
+      document.getElementById('chatInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') sendChat();
+      });
+
+      document.getElementById('lengthSlider').addEventListener('input', function() {
+        S.dockLength = parseInt(this.value);
+        document.getElementById('lengthDisplay').textContent = S.dockLength;
+        const settingsInput = document.querySelector('.sheet-cell[data-key="dockLength"]');
+        if (settingsInput) settingsInput.value = S.dockLength;
+        updateAll();
+      });
+
+      document.getElementById('widthInput').addEventListener('change', function() {
+        S.dockWidth = parseFloat(this.value) || 5;
+        const settingsInput = document.querySelector('.sheet-cell[data-key="dockWidth"]');
+        if (settingsInput) settingsInput.value = S.dockWidth;
+        updateAll();
+      });
+
+      document.querySelectorAll('.sheet-cell').forEach(input => {
+        input.addEventListener('change', function() {
+          const key = this.dataset.key;
+          if (key) {
+            S[key] = parseFloat(this.value) || 0;
+            if (key === 'dockLength') {
+              const slider = document.getElementById('lengthSlider');
+              slider.value = Math.max(60, Math.min(500, S.dockLength));
+              document.getElementById('lengthDisplay').textContent = S.dockLength;
+            }
+            if (key === 'dockWidth') {
+              document.getElementById('widthInput').value = S.dockWidth;
+            }
+            updateAll();
+            this.classList.add('flash');
+            setTimeout(() => this.classList.remove('flash'), 500);
+          }
+        });
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
