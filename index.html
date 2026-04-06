@@ -1772,7 +1772,7 @@
         type: 'bar',
         plugins: [totalLabelPlugin],
         data: {
-          labels: ['All Wood', 'Shoreline\nComposite'],
+          labels: ['Wood +\nComposite Deck', 'Shoreline\nComposite'],
           datasets: [
             { label: 'Materials', data: [0,0], backgroundColor: 'rgba(13, 115, 119, 0.8)', borderRadius: 3 },
             { label: 'Labor', data: [0,0], backgroundColor: 'rgba(244, 132, 95, 0.8)', borderRadius: 3 },
@@ -1821,15 +1821,15 @@
     }
 
     function updateChart() {
-      const allWood = calcWood(S, false, false);
+      const woodCompDeck = calcWood(S, true, false);  // Wood with composite deck
       const comp = calcComposite(S);
       const oh = S.mobilization + S.contractorProfit;
 
-      chart.data.datasets[0].data = [allWood.mat.total, comp.mat.total];
-      chart.data.datasets[1].data = [allWood.lab.total, comp.lab.total];
+      chart.data.datasets[0].data = [woodCompDeck.mat.total, comp.mat.total];
+      chart.data.datasets[1].data = [woodCompDeck.lab.total, comp.lab.total];
       chart.data.datasets[2].data = [oh, oh];
 
-      const maxTotal = Math.max(allWood.grand, comp.grand);
+      const maxTotal = Math.max(woodCompDeck.grand, comp.grand);
       chart.options.scales.y.suggestedMax = maxTotal * 1.12;
       chart.update();
     }
@@ -1849,37 +1849,40 @@
       document.getElementById('printConfig').textContent =
         `${S.dockLength}ft × ${S.dockWidth}ft walkway (${sqft.toLocaleString()} sq ft) | Generated ${new Date().toLocaleDateString()}`;
 
+      // For print view, always show wood + composite deck vs composite
+      const printWood = calcWood(S, true, false);  // Wood with composite deck for print
+      
       const r = (lbl, wVal, cVal) => `<tr><td>${lbl}</td><td>${typeof wVal === 'number' ? fmt(wVal) : wVal}</td><td>${typeof cVal === 'number' ? fmt(cVal) : cVal}</td><td>${typeof wVal === 'number' && typeof cVal === 'number' ? fmt(cVal - wVal) : '—'}</td></tr>`;
       const sec = (lbl) => `<tr class="sec-row"><td colspan="4">${lbl}</td></tr>`;
       const sub = (lbl, wVal, cVal) => `<tr class="sub-row"><td>${lbl}</td><td>${fmt(wVal)}</td><td>${fmt(cVal)}</td><td>${fmt(cVal - wVal)}</td></tr>`;
       const tot = (lbl, wVal, cVal) => `<tr class="total-row"><td>${lbl}</td><td>${fmt(wVal)}</td><td>${fmt(cVal)}</td><td>${fmt(cVal - wVal)}</td></tr>`;
 
       document.getElementById('printTable').innerHTML =
-        `<thead><tr><th>Item</th><th>${woodLabel}</th><th>Shoreline Composite</th><th>Difference</th></tr></thead><tbody>` +
+        `<thead><tr><th>Item</th><th>Wood + Composite Deck</th><th>Shoreline Composite</th><th>Difference</th></tr></thead><tbody>` +
         sec('MATERIALS') +
-        r('Pilings', w.mat.pilings, c.mat.pilings) +
-        r('Black Pile Wrap', w.mat.blackWrap || '—', '—') +
-        r('Stringers', w.mat.stringers, c.mat.stringers) +
-        r('Headers &amp; Blocking', w.mat.headers, c.mat.headers) +
-        r('Hardware', w.mat.hardware, c.mat.hardware) +
+        r('Pilings', printWood.mat.pilings, c.mat.pilings) +
+        r('Black Pile Wrap', printWood.mat.blackWrap || '—', '—') +
+        r('Stringers', printWood.mat.stringers, c.mat.stringers) +
+        r('Headers &amp; Blocking', printWood.mat.headers, c.mat.headers) +
+        r('Hardware', printWood.mat.hardware, c.mat.hardware) +
         r('Bent Assembly', '—', c.mat.bentAssembly) +
-        r('Decking', w.mat.decking, c.mat.decking) +
-        r('Decking Screws', w.mat.screws, 0) +
+        r('Decking', printWood.mat.decking, c.mat.decking) +
+        r('Decking Screws', printWood.mat.screws, 0) +
         r('Dealer Profit', '—', c.mat.dealerProfit) +
-        sub('TOTAL MATERIALS', w.mat.total, c.mat.total) +
+        sub('TOTAL MATERIALS', printWood.mat.total, c.mat.total) +
         sec('LABOR') +
-        r('Pile Installation', w.lab.pileInstall, c.lab.pileInstall) +
-        r('Headers / Bolting', w.lab.headers, c.lab.headers) +
-        r('Stringer Install', w.lab.stringers, 0) +
-        r('Decking', w.lab.decking, c.lab.decking) +
+        r('Pile Installation', printWood.lab.pileInstall, c.lab.pileInstall) +
+        r('Headers / Bolting', printWood.lab.headers, c.lab.headers) +
+        r('Stringer Install', printWood.lab.stringers, 0) +
+        r('Decking', printWood.lab.decking, c.lab.decking) +
         r('Bent Placement', '—', c.lab.bentPlacement) +
-        sub('TOTAL LABOR', w.lab.total, c.lab.total) +
+        sub('TOTAL LABOR', printWood.lab.total, c.lab.total) +
         sec('OVERHEAD') +
         r('Mobilization', S.mobilization, S.mobilization) +
         r('Contractor Profit', S.contractorProfit, S.contractorProfit) +
-        tot('GRAND TOTAL', w.grand, c.grand) +
-        `<tr><td>Cost per sq ft</td><td>${fmtDec(w.grand / sqft, 2)}</td><td>${fmtDec(c.grand / sqft, 2)}</td><td>${fmtDec((c.grand - w.grand) / sqft, 2)}</td></tr>` +
-        `<tr><td>Estimated Install Time</td><td>${w.weeks.toFixed(1)} weeks</td><td>${c.weeks.toFixed(1)} weeks</td><td>${(c.weeks - w.weeks).toFixed(1)} weeks</td></tr>` +
+        tot('GRAND TOTAL', printWood.grand, c.grand) +
+        `<tr><td>Cost per sq ft</td><td>${fmtDec(printWood.grand / sqft, 2)}</td><td>${fmtDec(c.grand / sqft, 2)}</td><td>${fmtDec((c.grand - printWood.grand) / sqft, 2)}</td></tr>` +
+        `<tr><td>Estimated Install Time</td><td>${printWood.weeks.toFixed(1)} weeks</td><td>${c.weeks.toFixed(1)} weeks</td><td>${(c.weeks - printWood.weeks).toFixed(1)} weeks</td></tr>` +
         '</tbody>';
     }
 
@@ -1912,7 +1915,7 @@
     function resetDefaults() {
       S = { ...DEFAULTS };
       syncSettingsToUI();
-      document.getElementById('toggleCompDeck').checked = false;
+      document.getElementById('toggleCompDeck').checked = true;  // Default to composite deck
       document.getElementById('toggleEcoPile').checked = false;
       updateAll();
     }
