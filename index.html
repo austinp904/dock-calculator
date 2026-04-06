@@ -34,6 +34,63 @@
       --shadow-lg: 0 4px 6px rgba(0,0,0,0.07), 0 12px 28px rgba(0,0,0,0.08);
     }
 
+    /* ─── DARK MODE ─── */
+    body.dark-mode {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #f1f5f9;
+      --text-mid: #cbd5e1;
+      --text-light: #64748b;
+      --border: #334155;
+      --cell-border: #475569;
+      --cell-focus-bg: #1e3a8a;
+      --cell-hover: #334155;
+      --shadow: 0 1px 3px rgba(0,0,0,0.2), 0 4px 12px rgba(0,0,0,0.15);
+      --shadow-lg: 0 4px 6px rgba(0,0,0,0.15), 0 12px 28px rgba(0,0,0,0.2);
+    }
+
+    body.dark-mode .controls-bar {
+      background: var(--card);
+      border-bottom-color: var(--border);
+    }
+
+    body.dark-mode .upgrades-strip {
+      background: rgba(15, 23, 42, 0.6);
+      border-color: var(--border);
+    }
+
+    body.dark-mode .chat-messages {
+      background: var(--bg);
+    }
+
+    body.dark-mode .ss-overlay {
+      background: var(--bg);
+    }
+
+    body.dark-mode .ss-toolbar {
+      background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+    }
+
+    body.dark-mode .ss-formula-bar {
+      background: var(--card);
+      border-bottom-color: var(--border);
+    }
+
+    body.dark-mode .ss-table td {
+      background: var(--card);
+      border-color: var(--border);
+    }
+
+    body.dark-mode .ss-table th {
+      background: var(--border);
+      border-color: var(--cell-border);
+      color: var(--text-mid);
+    }
+
+    body.dark-mode .ss-input-td {
+      background: rgba(37, 99, 235, 0.1) !important;
+    }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
@@ -1149,6 +1206,12 @@
         AI Chat
         <span class="chat-status" id="chatStatusHeader"></span>
       </button>
+      <button class="btn btn-ghost" onclick="toggleDarkMode()" id="darkModeBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="darkModeIcon">
+          <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+        </svg>
+        <span id="darkModeText">Dark</span>
+      </button>
       <button class="btn btn-ghost" onclick="toggleSettings()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 00-2 2v.18a2 2 0 01-1 1.73l-.43.25a2 2 0 01-2 0l-.15-.08a2 2 0 00-2.73.73l-.22.38a2 2 0 00.73 2.73l.15.1a2 2 0 011 1.72v.51a2 2 0 01-1 1.74l-.15.09a2 2 0 00-.73 2.73l.22.38a2 2 0 002.73.73l.15-.08a2 2 0 012 0l.43.25a2 2 0 011 1.73V20a2 2 0 002 2h.44a2 2 0 002-2v-.18a2 2 0 011-1.73l.43-.25a2 2 0 012 0l.15.08a2 2 0 002.73-.73l.22-.39a2 2 0 00-.73-2.73l-.15-.08a2 2 0 01-1-1.74v-.5a2 2 0 011-1.74l.15-.09a2 2 0 00.73-2.73l-.22-.38a2 2 0 00-2.73-.73l-.15.08a2 2 0 01-2 0l-.43-.25a2 2 0 01-1-1.73V4a2 2 0 00-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
         Settings
@@ -1861,6 +1924,28 @@
       window.print();
     }
 
+    function toggleDarkMode() {
+      const body = document.body;
+      const isDark = body.classList.toggle('dark-mode');
+      
+      // Save preference
+      localStorage.setItem('darkMode', isDark);
+      
+      // Update button content
+      const icon = document.getElementById('darkModeIcon');
+      const text = document.getElementById('darkModeText');
+      
+      if (isDark) {
+        // Sun icon for light mode
+        icon.innerHTML = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+        text.textContent = 'Light';
+      } else {
+        // Moon icon for dark mode
+        icon.innerHTML = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
+        text.textContent = 'Dark';
+      }
+    }
+
     /* ─── AI CHAT ─── */
     let chatWS = null;
     let chatOpen = false;
@@ -2180,6 +2265,16 @@
     }
 
     function init() {
+      // Initialize dark mode from localStorage
+      const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+      if (savedDarkMode) {
+        document.body.classList.add('dark-mode');
+        const icon = document.getElementById('darkModeIcon');
+        const text = document.getElementById('darkModeText');
+        icon.innerHTML = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+        text.textContent = 'Light';
+      }
+
       syncSettingsToUI();
       initChart();
       updateAll();
