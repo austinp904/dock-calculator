@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shoreline Plastics — Dock Cost Comparison</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Code+Pro:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
   <style>
     :root {
@@ -94,7 +94,7 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.5;
@@ -203,7 +203,7 @@
     }
     .length-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
     .length-value {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 20px;
       font-weight: 700;
       color: var(--teal);
@@ -219,7 +219,7 @@
       padding: 6px 8px;
       border: 1px solid var(--cell-border);
       border-radius: 6px;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 14px;
       text-align: center;
       outline: none;
@@ -339,7 +339,7 @@
     .cost-table td:first-child { color: var(--text-mid); }
     .cost-table td:last-child {
       text-align: right;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-weight: 500;
       font-size: 13px;
     }
@@ -372,7 +372,7 @@
       letter-spacing: 0.5px;
     }
     .grand-total .value {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 26px;
       font-weight: 700;
     }
@@ -393,7 +393,7 @@
       text-align: center;
     }
     .metric-badge .mv {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 16px;
       font-weight: 700;
       display: block;
@@ -429,7 +429,7 @@
       font-weight: 600;
     }
     .savings-text .amount {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 22px;
       font-weight: 700;
     }
@@ -515,7 +515,7 @@
       text-align: center;
     }
     .key-metric .km-value {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 24px;
       font-weight: 700;
       display: block;
@@ -634,7 +634,7 @@
       border: none;
       border-left: 1px solid #f1f5f9;
       background: transparent;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 13px;
       font-weight: 500;
       text-align: right;
@@ -749,7 +749,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 12px;
       flex-shrink: 0;
     }
@@ -774,7 +774,7 @@
     }
     .ss-table {
       border-collapse: collapse;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 12px;
       margin: 0;
     }
@@ -831,7 +831,7 @@
       border: none;
       background: transparent;
       padding: 2px 8px;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 12px;
       text-align: right;
       outline: none;
@@ -875,7 +875,7 @@
       background: #fff8e1 !important;
       font-size: 11px;
       color: #666;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
     }
     .ss-label-bold { font-weight: 700; }
 
@@ -1142,7 +1142,7 @@
       .print-table td:nth-child(3),
       .print-table td:nth-child(4) {
         text-align: right;
-        font-family: 'JetBrains Mono', monospace;
+        font-family: 'Source Code Pro', monospace;
         font-size: 10.5px;
       }
       .print-table .sec-row td {
@@ -1759,7 +1759,7 @@
           ctx.save();
           ctx.textAlign = 'center';
           ctx.fillStyle = '#1e293b';
-          ctx.font = "bold 12px 'Plus Jakarta Sans', sans-serif";
+          ctx.font = "bold 12px 'Inter', sans-serif";
           ctx.fillText('$' + Math.round(total).toLocaleString(), bar.x, bar.y - 10);
           ctx.restore();
         });
@@ -1786,12 +1786,12 @@
           plugins: {
             legend: {
               position: 'top',
-              labels: { font: { family: "'Plus Jakarta Sans'", size: 12, weight: '600' }, padding: 20, usePointStyle: true, pointStyle: 'rectRounded' },
+              labels: { font: { family: "'Inter'", size: 12, weight: '600' }, padding: 20, usePointStyle: true, pointStyle: 'rectRounded' },
             },
             tooltip: {
               backgroundColor: 'rgba(15,23,42,0.9)',
-              titleFont: { family: "'Plus Jakarta Sans'", size: 13, weight: '700' },
-              bodyFont: { family: "'JetBrains Mono'", size: 12 },
+              titleFont: { family: "'Inter'", size: 13, weight: '700' },
+              bodyFont: { family: "'Source Code Pro'", size: 12 },
               padding: 12,
               cornerRadius: 8,
               callbacks: {
@@ -1803,13 +1803,13 @@
             x: {
               stacked: true,
               grid: { display: false },
-              ticks: { font: { family: "'Plus Jakarta Sans'", size: 11, weight: '600' }, color: '#64748b' },
+              ticks: { font: { family: "'Inter'", size: 11, weight: '600' }, color: '#64748b' },
             },
             y: {
               stacked: true,
               grid: { color: '#f1f5f9' },
               ticks: {
-                font: { family: "'JetBrains Mono'", size: 11 },
+                font: { family: "'Source Code Pro'", size: 11 },
                 color: '#94a3b8',
                 callback: function(val) { return '$' + (val / 1000).toFixed(0) + 'k'; },
               },
