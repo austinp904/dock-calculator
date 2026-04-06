@@ -1271,26 +1271,11 @@
         <div class="card-header wood">
           <div>
             <h2>Traditional Wood Dock</h2>
-            <div class="subtitle" id="woodSubtitle">Standard PT wood construction</div>
+            <div class="subtitle" id="woodSubtitle">PT wood construction with composite decking</div>
           </div>
         </div>
         <div class="card-body">
-          <div class="upgrades-strip">
-            <label class="upgrade-item" for="toggleCompDeck">
-              <span class="toggle-switch">
-                <input type="checkbox" id="toggleCompDeck" onchange="updateAll()" aria-label="Composite Deck upgrade">
-                <span class="toggle-track"></span>
-              </span>
-              <span>Composite Deck</span>
-            </label>
-            <label class="upgrade-item" for="toggleEcoPile">
-              <span class="toggle-switch">
-                <input type="checkbox" id="toggleEcoPile" onchange="updateAll()" aria-label="EcoPile Pilings upgrade">
-                <span class="toggle-track"></span>
-              </span>
-              <span>EcoPile Pilings</span>
-            </label>
-          </div>
+
 
           <div class="section-label">Materials</div>
           <table class="cost-table" id="woodMatTable"></table>
@@ -1415,9 +1400,9 @@
 
     <!-- ─── NOTES ─── -->
     <div class="notes-section">
-      <strong>Notes:</strong> This is a cost comparison for the substructure of a dock comparing PT wood to EcoPile/composite stringers.
+      <strong>Notes:</strong> This is a cost comparison for the substructure of a dock comparing traditional PT wood with composite decking to Shoreline's EcoPile/composite stringer system.
       Labor cost is approximate. Does not include boathouse, boatlift, electrical, or plumbing.
-      Due to reduced labor and piling count, the Shoreline Composite system costs approximately the same as PT wood with composite decking, while installing in roughly one quarter the time.
+      Due to reduced labor and piling count, the Shoreline Composite system costs approximately the same as traditional wood with composite decking, while installing in roughly one quarter the time.
     </div>
   </div>
 
@@ -1651,17 +1636,14 @@
     }
 
     function updateCards() {
-      const compDeck = document.getElementById('toggleCompDeck').checked;
-      const ecoPile = document.getElementById('toggleEcoPile').checked;
+      const compDeck = true;  // Always use composite decking now
+      const ecoPile = false;  // Never use EcoPile for wood dock
 
       const w = calcWood(S, compDeck, ecoPile);
       const c = calcComposite(S);
 
-      let subtitle = 'Standard PT wood construction';
-      if (compDeck && ecoPile) subtitle = 'With EcoPile pilings + WearDeck composite decking';
-      else if (compDeck) subtitle = 'With WearDeck composite decking upgrade';
-      else if (ecoPile) subtitle = 'With EcoPile pilings upgrade';
-      document.getElementById('woodSubtitle').textContent = subtitle;
+      // Subtitle is now fixed since we always use composite decking
+      document.getElementById('woodSubtitle').textContent = 'PT wood construction with composite decking';
 
       const deckLabel = compDeck
         ? `Decking (WearDeck @ ${fmtDec(w.deckPrice, 2)}/sf)`
@@ -1781,7 +1763,7 @@
         type: 'bar',
         plugins: [totalLabelPlugin],
         data: {
-          labels: ['Wood +\nComposite Deck', 'Shoreline\nComposite'],
+          labels: ['Traditional Wood\n+ Composite Deck', 'Shoreline\nComposite'],
           datasets: [
             { label: 'Materials', data: [0,0], backgroundColor: 'rgba(13, 115, 119, 0.8)', borderRadius: 3 },
             { label: 'Labor', data: [0,0], backgroundColor: 'rgba(244, 132, 95, 0.8)', borderRadius: 3 },
@@ -1844,15 +1826,12 @@
     }
 
     function updatePrintTable() {
-      const compDeck = document.getElementById('toggleCompDeck').checked;
-      const ecoPile = document.getElementById('toggleEcoPile').checked;
+      const compDeck = true;  // Always use composite decking
+      const ecoPile = false;  // Never use EcoPile for wood dock
       const w = calcWood(S, compDeck, ecoPile);
       const c = calcComposite(S);
 
-      let woodLabel = 'Traditional Wood';
-      if (compDeck && ecoPile) woodLabel = 'Wood + EcoPile + Comp. Deck';
-      else if (compDeck) woodLabel = 'Wood + Composite Deck';
-      else if (ecoPile) woodLabel = 'Wood + EcoPile';
+      const woodLabel = 'Wood + Composite Deck';  // Fixed label
 
       const sqft = S.dockLength * S.dockWidth;
       document.getElementById('printConfig').textContent =
@@ -1924,8 +1903,6 @@
     function resetDefaults() {
       S = { ...DEFAULTS };
       syncSettingsToUI();
-      document.getElementById('toggleCompDeck').checked = true;  // Default to composite deck
-      document.getElementById('toggleEcoPile').checked = false;
       updateAll();
     }
 
