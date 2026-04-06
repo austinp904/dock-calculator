@@ -1772,11 +1772,11 @@
         type: 'bar',
         plugins: [totalLabelPlugin],
         data: {
-          labels: ['All Wood', 'Wood +\nComp. Deck', 'Wood +\nEcoPile', 'Wood +\nBoth', 'Shoreline\nComposite'],
+          labels: ['All Wood', 'Shoreline\nComposite'],
           datasets: [
-            { label: 'Materials', data: [0,0,0,0,0], backgroundColor: 'rgba(13, 115, 119, 0.8)', borderRadius: 3 },
-            { label: 'Labor', data: [0,0,0,0,0], backgroundColor: 'rgba(244, 132, 95, 0.8)', borderRadius: 3 },
-            { label: 'Overhead', data: [0,0,0,0,0], backgroundColor: 'rgba(148, 163, 184, 0.7)', borderRadius: {topLeft: 3, topRight: 3} },
+            { label: 'Materials', data: [0,0], backgroundColor: 'rgba(13, 115, 119, 0.8)', borderRadius: 3 },
+            { label: 'Labor', data: [0,0], backgroundColor: 'rgba(244, 132, 95, 0.8)', borderRadius: 3 },
+            { label: 'Overhead', data: [0,0], backgroundColor: 'rgba(148, 163, 184, 0.7)', borderRadius: {topLeft: 3, topRight: 3} },
           ],
         },
         options: {
@@ -1822,17 +1822,14 @@
 
     function updateChart() {
       const allWood = calcWood(S, false, false);
-      const wCompDeck = calcWood(S, true, false);
-      const wEcoPile = calcWood(S, false, true);
-      const wBoth = calcWood(S, true, true);
       const comp = calcComposite(S);
       const oh = S.mobilization + S.contractorProfit;
 
-      chart.data.datasets[0].data = [allWood.mat.total, wCompDeck.mat.total, wEcoPile.mat.total, wBoth.mat.total, comp.mat.total];
-      chart.data.datasets[1].data = [allWood.lab.total, wCompDeck.lab.total, wEcoPile.lab.total, wBoth.lab.total, comp.lab.total];
-      chart.data.datasets[2].data = [oh, oh, oh, oh, oh];
+      chart.data.datasets[0].data = [allWood.mat.total, comp.mat.total];
+      chart.data.datasets[1].data = [allWood.lab.total, comp.lab.total];
+      chart.data.datasets[2].data = [oh, oh];
 
-      const maxTotal = Math.max(allWood.grand, wCompDeck.grand, wEcoPile.grand, wBoth.grand, comp.grand);
+      const maxTotal = Math.max(allWood.grand, comp.grand);
       chart.options.scales.y.suggestedMax = maxTotal * 1.12;
       chart.update();
     }
